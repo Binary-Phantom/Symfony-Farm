@@ -1,0 +1,48 @@
+docker compose up -d
+
+docker compose down
+
+docker exec -it symfony bash
+
+dentro do container pra instalar o symfony: curl -sS https://get.symfony.com/cli/installer | bash
+mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
+
+criar o projeto: symfony new . --webapp
+
+#### a pasta tem q ta vazia, se n n criar
+
+usar o comando:  composer create-project symfony/skeleton .
+se o git der b.o de confiabilidade
+
+dentro de var/www/html , var/www/html/app e var/www/html/app/farm
+
+usar: 
+
+git config --global --add safe.directory /var/www/html
+git config --global --add safe.directory /var/www/html/app
+git config --global --add safe.directory /var/www/html/farm
+
+rodar: composer create-project symfony/skeleton farm e dps: 
+cd farm
+composer require symfony/webapp-pack
+
+estrutura esperada: 
+
+/var/www/html
+│
+├── docker-compose.yml
+├── Dockerfile
+└── app
+    └── farm
+        ├── src
+        ├── config
+        ├── public
+        ├── templates
+        ├── vendor
+        └── .env
+
+editar o .env: 
+
+instalar o doctrine: 
+composer require symfony/orm-pack
+composer require symfony/maker-bundle --dev

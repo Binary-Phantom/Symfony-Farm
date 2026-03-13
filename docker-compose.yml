@@ -1,0 +1,27 @@
+services:
+
+  symfony:
+    build: ./docker
+    container_name: symfony
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - faz_bd
+
+  faz_bd:
+    image: mysql:8
+    container_name: faz_bd
+    environment:
+      MYSQL_DATABASE: fazenda
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: symfony
+      MYSQL_PASSWORD: symfony
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:
