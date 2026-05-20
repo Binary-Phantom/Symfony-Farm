@@ -42,9 +42,10 @@ class DashboardController extends AbstractController
             /*
              * Animal jovem
              */
-            if ($idade < 2) {
+            if ($idade <= 1 && $gado->getRacaoSemana() > 500
 
-                $totalAnimaisJovens++;
+            ) {
+                    $totalAnimaisJovens++;
 
             }
 

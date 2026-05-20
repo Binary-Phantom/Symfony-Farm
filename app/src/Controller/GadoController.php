@@ -15,7 +15,9 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/gado')]
 final class GadoController extends AbstractController
 {
-    /*LIsta animaiS vivos*/
+    /*
+     * Lista animais vivos
+     */
     #[Route('/', name: 'app_gado_index', methods: ['GET'])]
     public function index(
         GadoRepository $gadoRepository,
@@ -45,9 +47,10 @@ final class GadoController extends AbstractController
         ]);
     }
 
-    /* animais abatidos */
+    /*
+     * Lista animais abatidos
+     */
     #[Route('/abatidos', name: 'app_gado_abatidos', methods: ['GET'])]
-    
     public function abatidos(
         GadoRepository $gadoRepository,
         PaginatorInterface $paginator,
@@ -79,7 +82,9 @@ final class GadoController extends AbstractController
         );
     }
 
-    /*novo bicho*/
+    /*
+     * Cadastro de animal
+     */
     #[Route('/new', name: 'app_gado_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
@@ -88,7 +93,9 @@ final class GadoController extends AbstractController
 
         $gado = new Gado();
 
-        /* Animal nasce vivo (avá)*/
+        /*
+         * Animal nasce vivo
+         */
         $gado->setAbatido(false);
 
         $form = $this->createForm(
@@ -97,6 +104,23 @@ final class GadoController extends AbstractController
         );
 
         $form->handleRequest($request);
+
+        /*
+         * Validação de data futura
+         */
+        if (
+
+            $form->isSubmitted()
+            &&
+            $gado->getNascimento() > new \DateTime()
+
+        ) {
+
+            $this->addFlash(
+                'danger',
+                'Não é possível cadastrar um animal com data futura.'
+            );
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -124,7 +148,7 @@ final class GadoController extends AbstractController
     }
 
     /*
-     tela de detalhes do gado (lembrar de tentar por foto depois) 
+     * Detalhes do animal
      */
     #[Route('/{id}', name: 'app_gado_show', methods: ['GET'])]
     public function show(Gado $gado): Response
@@ -136,7 +160,9 @@ final class GadoController extends AbstractController
         ]);
     }
 
-    /*edita gado*/
+    /*
+     * Editar animal
+     */
     #[Route('/{id}/edit', name: 'app_gado_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
@@ -150,6 +176,23 @@ final class GadoController extends AbstractController
         );
 
         $form->handleRequest($request);
+
+        /*
+         * Validação de data futura
+         */
+        if (
+
+            $form->isSubmitted()
+            &&
+            $gado->getNascimento() > new \DateTime()
+
+        ) {
+
+            $this->addFlash(
+                'danger',
+                'Não é possível cadastrar um animal com data futura.'
+            );
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -175,27 +218,131 @@ final class GadoController extends AbstractController
     }
 
     /*
- * Abater animal
- */
-#[Route('/{id}/abater', name: 'app_gado_abater', methods: ['POST'])]
-public function abater(
-    Request $request,
-    Gado $gado,
-    EntityManagerInterface $entityManager
-): Response {
+     * Abater animal
+     */
+    #[Route('/{id}/abater', name: 'app_gado_abater', methods: ['POST'])]
+    public function abater(
+        Request $request,
+        Gado $gado,
+        EntityManagerInterface $entityManager
+    ): Response {
 
-    if (
+        if (
 
-        !$this->isCsrfTokenValid(
-            'abater'.$gado->getId(),
-            $request->request->get('_token')
-        )
+            !$this->isCsrfTokenValid(
+                'abater'.$gado->getId(),
+                $request->request->get('_token')
+            )
 
-    ) {
+        ) {
+
+            $this->addFlash(
+                'danger',
+                'Token inválido.'
+            );
+
+            return $this->redirectToRoute(
+                'app_gado_index'
+            );
+        }
+
+        /*
+         * Calcula idade
+         */
+        $idade = $gado
+            ->getNascimento()
+            ->diff(new \DateTime());
+
+        $anos = $idade->y;
+
+        /*
+         * Litros semana
+         */
+        $leiteSemana = $gado->getLeiteSemana();
+
+        /*
+         * Ração por dia
+         */
+        $racaoDia = $gado->getRacaoSemana() / 7;
+
+        /*
+         * Arrobas
+         */
+        $arrobas = $gado->getPeso() / 15;
+
+        /*
+         * Verifica regras
+         */
+        $podeAbater = false;
+
+        /*
+         * Mais de 5 anos
+         */
+        if ($anos > 5) {
+
+            $podeAbater = true;
+
+        }
+
+        /*
+         * Menos de 40L
+         */
+        if ($leiteSemana < 40) {
+
+            $podeAbater = true;
+
+        }
+
+        /*
+         * Menos de 70L
+         * e mais de 50kg/dia
+         */
+        if (
+
+            $leiteSemana < 70
+            &&
+            $racaoDia > 50
+
+        ) {
+
+            $podeAbater = true;
+
+        }
+
+        /*
+         * Mais de 18 arrobas
+         */
+        if ($arrobas > 18) {
+
+            $podeAbater = true;
+
+        }
+
+        /*
+         * Impede abate inválido
+         */
+        if (!$podeAbater) {
+
+            $this->addFlash(
+                'danger',
+                'Este animal não atende aos critérios para abate.'
+            );
+
+            return $this->redirectToRoute(
+                'app_gado_index'
+            );
+        }
+
+        /*
+         * Realiza abate
+         */
+        $gado->setAbatido(true);
+
+        $entityManager->flush();
 
         $this->addFlash(
-            'danger',
-            'Token inválido.'
+            'success',
+            'Animal abatido com sucesso.'
         );
 
         return $this->redirectToRoute(
@@ -204,112 +351,8 @@ public function abater(
     }
 
     /*
-     * Calcula idade
+     * Remove animal
      */
-    $idade = $gado
-        ->getNascimento()
-        ->diff(new \DateTime());
-
-    $anos = $idade->y;
-
-    /*
-     * Litros por semana
-     */
-    $leiteSemana = $gado->getLeiteSemana();
-
-    /*
-     * Ração por dia
-     */
-    $racaoDia = $gado->getRacaoSemana() / 7;
-
-    /*
-     * Arrobas
-     * 1 arroba = 15kg
-     */
-    $arrobas = $gado->getPeso() / 15;
-
-    /*
-     * Regras para abate
-     */
-    $podeAbater = false;
-
-    /*
-     * Mais de 5 anos
-     */
-    if ($anos > 5) {
-
-        $podeAbater = true;
-
-    }
-
-    /*
-     * Menos de 40 litros por semana
-     */
-    if ($leiteSemana < 40) {
-
-        $podeAbater = true;
-
-    }
-
-    /*
-     * Menos de 70 litros
-     * e mais de 50kg de ração por dia
-     */
-    if (
-
-        $leiteSemana < 70
-        &&
-        $racaoDia > 50
-
-    ) {
-
-        $podeAbater = true;
-
-    }
-
-    /*
-     * Mais de 18 arrobas
-     */
-    if ($arrobas > 18) {
-
-        $podeAbater = true;
-
-    }
-
-    /*
-     * Impede abate inválido
-     */
-    if (!$podeAbater) {
-
-        $this->addFlash(
-            'danger',
-            'Este animal não atende aos critérios para abate.'
-        );
-
-        return $this->redirectToRoute(
-            'app_gado_index'
-        );
-    }
-
-    /*
-     * Realiza o abate
-     */
-    $gado->setAbatido(true);
-
-    $entityManager->flush();
-
-    $this->addFlash(
-        'warning',
-        'Animal abatido com sucesso.'
-    );
-
-    return $this->redirectToRoute(
-        'app_gado_index'
-    );
-}
-
-    /* remove*/
-
     #[Route('/{id}', name: 'app_gado_delete', methods: ['POST'])]
     public function delete(
         Request $request,
