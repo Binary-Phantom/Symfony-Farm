@@ -15,9 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/gado')]
 final class GadoController extends AbstractController
 {
-    /*
-     * LISTAGEM DE GADOS VIVOS
-     */
+    /*LIsta animaiS vivos*/
     #[Route('/', name: 'app_gado_index', methods: ['GET'])]
     public function index(
         GadoRepository $gadoRepository,
@@ -47,9 +45,7 @@ final class GadoController extends AbstractController
         ]);
     }
 
-    /*
-     * LISTAGEM DE GADOS ABATIDOS
-     */
+    /* animais abatidos */
     #[Route(
         '/abatidos',
         name: 'app_gado_abatidos',
@@ -86,9 +82,7 @@ final class GadoController extends AbstractController
         );
     }
 
-    /*
-     * NOVO GADO
-     */
+    /*novo bicho*/
     #[Route('/new', name: 'app_gado_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
@@ -97,9 +91,7 @@ final class GadoController extends AbstractController
 
         $gado = new Gado();
 
-        /*
-         * Animal nasce vivo
-         */
+        /* Animal nasce vivo (avá)*/
         $gado->setAbatido(false);
 
         $form = $this->createForm(
@@ -135,7 +127,7 @@ final class GadoController extends AbstractController
     }
 
     /*
-     * DETALHES
+     tela de detalhes do gado (lembrar de tentar por foto depois) 
      */
     #[Route('/{id}', name: 'app_gado_show', methods: ['GET'])]
     public function show(Gado $gado): Response
@@ -147,9 +139,7 @@ final class GadoController extends AbstractController
         ]);
     }
 
-    /*
-     * EDITAR
-     */
+    /*edita gado*/
     #[Route('/{id}/edit', name: 'app_gado_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
@@ -187,9 +177,7 @@ final class GadoController extends AbstractController
         ]);
     }
 
-    /*
-     * ABATER ANIMAL
-     */
+    /*abater animal*/
     #[Route(
         '/{id}/abater',
         name: 'app_gado_abater',
@@ -225,9 +213,8 @@ final class GadoController extends AbstractController
         );
     }
 
-    /*
-     * EXCLUIR
-     */
+    /* remove*/
+
     #[Route('/{id}', name: 'app_gado_delete', methods: ['POST'])]
     public function delete(
         Request $request,

@@ -6,7 +6,7 @@ use App\Repository\FazendaRepository;
 use App\Repository\GadoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Attribute\Route; /*lembrar de sempre usar Attribute Route* para evitar problemas de cache (BURRO)*/
 
 class DashboardController extends AbstractController
 {
@@ -16,8 +16,7 @@ class DashboardController extends AbstractController
         FazendaRepository $fazendaRepository
     ): Response {
 
-        /*
-         * Apenas animais vivos
+        /*Apenas animais vivos
          */
         $gados = $gadoRepository->findBy([
             'abatido' => false
@@ -50,7 +49,7 @@ class DashboardController extends AbstractController
             }
 
             /*
-             * Animal para abate
+             * Animal pra abate
              */
             if (
 
