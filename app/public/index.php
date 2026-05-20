@@ -2,16 +2,20 @@
 
 use App\Kernel;
 
-$_SERVER['APP_ENV'] = $_SERVER['APP_ENV'] ?? 'prod';
-$_SERVER['APP_DEBUG'] = $_SERVER['APP_DEBUG'] ?? false;
+require_once dirname(__DIR__).'/vendor/autoload.php';
 
-require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
+$_SERVER['APP_ENV'] = $_ENV['APP_ENV'] ?? 'prod';
+$_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] ?? false;
 
-return function (array $context) {
+$kernel = new Kernel(
+    $_SERVER['APP_ENV'],
+    (bool) $_SERVER['APP_DEBUG']
+);
 
-    return new Kernel(
-        $context['APP_ENV'],
-        (bool) $context['APP_DEBUG']
-    );
+$request = Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
-};
+$response = $kernel->handle($request);
+
+$response->send();
+
+$kernel->terminate($request, $response);
