@@ -1,0 +1,209 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}
+Resumo das Fazendas
+{% endblock %}
+
+{% block body %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h1 class="fw-bold">
+
+            Resumo das Fazendas
+
+        </h1>
+
+        <p class="text-muted">
+
+            Indicadores gerais das propriedades.
+
+        </p>
+
+    </div>
+
+    <a
+        href="{{ path('app_fazenda_index') }}"
+        class="btn btn-dark"
+    >
+        Voltar
+    </a>
+
+</div>
+
+<div class="row g-4">
+
+    <div class="col-12 col-xl-4">
+
+        <div class="card shadow-lg border-0 h-100">
+
+            <div class="card-body">
+
+                <h4 class="fw-bold mb-4">
+
+                    Animais por Fazenda
+
+                </h4>
+
+                <canvas id="pizzaChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-12 col-xl-8">
+
+        <div class="card shadow-lg border-0 h-100">
+
+            <div class="card-body">
+
+                <h4 class="fw-bold mb-4">
+
+                    Produção Semanal de Leite
+
+                </h4>
+
+                <canvas id="leiteChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-12">
+
+        <div class="card shadow-lg border-0">
+
+            <div class="card-body">
+
+                <h4 class="fw-bold mb-4">
+
+                    Consumo Semanal de Ração
+
+                </h4>
+
+                <canvas id="racaoChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const nomes = {{ nomes|raw }};
+
+const quantidadeAnimais =
+    {{ quantidadeAnimais|raw }};
+
+const producaoLeite =
+    {{ producaoLeite|raw }};
+
+const consumoRacao =
+    {{ consumoRacao|raw }};
+
+/*
+|--------------------------------------------------------------------------
+| Pizza
+|--------------------------------------------------------------------------
+*/
+
+new Chart(
+
+    document.getElementById('pizzaChart'),
+
+    {
+
+        type: 'pie',
+
+        data: {
+
+            labels: nomes,
+
+            datasets: [{
+
+                data: quantidadeAnimais
+
+            }]
+
+        }
+
+    }
+
+);
+
+/*
+|--------------------------------------------------------------------------
+| Produção de leite
+|--------------------------------------------------------------------------
+*/
+
+new Chart(
+
+    document.getElementById('leiteChart'),
+
+    {
+
+        type: 'bar',
+
+        data: {
+
+            labels: nomes,
+
+            datasets: [{
+
+                label: 'Litros por semana',
+
+                data: producaoLeite
+
+            }]
+
+        }
+
+    }
+
+);
+
+/*
+|--------------------------------------------------------------------------
+| Consumo de ração
+|--------------------------------------------------------------------------
+*/
+
+new Chart(
+
+    document.getElementById('racaoChart'),
+
+    {
+
+        type: 'bar',
+
+        data: {
+
+            labels: nomes,
+
+            datasets: [{
+
+                label: 'Kg por semana',
+
+                data: consumoRacao
+
+            }]
+
+        }
+
+    }
+
+);
+
+</script>
+
+{% endblock %}

@@ -2,16 +2,42 @@
 
 {% block body %}
 
-<div class="d-flex justify-content-between mb-4">
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4">
 
-    <h1>Gados</h1>
+    <div>
 
-    <a
-        href="{{ path('app_gado_new') }}"
-        class="btn btn-success"
-    >
-        Novo Gado
-    </a>
+        <h1 class="fw-bold mb-1">
+
+            Rebanho Ativo
+
+        </h1>
+
+        <p class="text-muted mb-0">
+
+            Controle completo dos animais vivos da fazenda.
+
+        </p>
+
+    </div>
+
+    <div class="d-flex gap-2 mt-3 mt-lg-0">
+
+
+        <a
+            href="{{ path('app_gado_abatidos') }}"
+            class="btn btn-danger"
+        >
+            Gados Abatidos
+        </a>
+
+        <a
+            href="{{ path('app_gado_new') }}"
+            class="btn btn-success"
+        >
+            Novo Gado
+        </a>
+
+    </div>
 
 </div>
 
@@ -28,6 +54,7 @@
                     <tr>
                         <th>Código</th>
                         <th>Peso</th>
+                        <th>Idade</th>
                         <th>Leite</th>
                         <th>Ração</th>
                         <th>Fazenda</th>
@@ -45,6 +72,45 @@
                         <td>{{ gado.codigo }}</td>
 
                         <td>{{ gado.peso }} Kg</td>
+
+
+                        <td>
+
+    {% set idade = date().diff(gado.nascimento) %}
+
+    <span class="badge bg-info text-dark p-2">
+
+        {{ idade.y }}
+
+                                 {% if idade.y == 1 %}
+                                    ano
+                                 {% else %}
+                                    anos
+                                {% endif %}
+
+                                    {{ idade.m }}
+
+                                    {% if idade.m == 1 %}
+                                        mês
+                                    {% else %}
+                                         meses
+                                    {% endif %}
+
+                                        e
+
+                                    {{ idade.d }}
+
+                                    {% if idade.d == 1 %}
+                                        dia
+                                    {% else %}
+                                        dias
+                                {% endif %}
+
+                            </span>
+
+                        </td>
+
+
 
                         <td>{{ gado.leiteSemana }} L</td>
 

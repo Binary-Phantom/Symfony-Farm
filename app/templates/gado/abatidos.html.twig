@@ -1,0 +1,143 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}
+Animais Abatidos
+{% endblock %}
+
+{% block body %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h1 class="fw-bold text-danger">
+
+            Animais Abatidos
+
+        </h1>
+
+        <p class="text-muted">
+
+            Histórico completo de animais abatidos.
+
+        </p>
+
+    </div>
+
+    <a
+        href="{{ path('app_gado_index') }}"
+        class="btn btn-dark"
+    >
+
+        Voltar aos Ativos
+
+    </a>
+
+</div>
+
+<div class="card shadow-lg border-0">
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>Código</th>
+                        <th>Peso</th>
+                        <th>Leite/Semana</th>
+                        <th>Ração/Semana</th>
+                        <th>Fazenda</th>
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for gado in pagination %}
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+
+                                #{{ gado.codigo }}
+
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            {{ gado.peso }} Kg
+
+                        </td>
+
+                        <td>
+
+                            {{ gado.leiteSemana }} L
+
+                        </td>
+
+                        <td>
+
+                            {{ gado.racaoSemana }} Kg
+
+                        </td>
+
+                        <td>
+
+                            {{ gado.fazenda.nome }}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-danger">
+
+                                Abatido
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="6">
+
+                            Nenhum animal abatido.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="mt-4">
+
+            {{ knp_pagination_render(pagination) }}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

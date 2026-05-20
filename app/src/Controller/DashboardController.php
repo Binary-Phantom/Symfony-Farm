@@ -16,14 +16,15 @@ class DashboardController extends AbstractController
         FazendaRepository $fazendaRepository
     ): Response {
 
+        /*
+         * Apenas animais vivos
+         */
         $gados = $gadoRepository->findBy([
             'abatido' => false
-            ]);
+        ]);
 
         $totalLeite = 0;
-
         $totalRacao = 0;
-
         $totalAnimaisJovens = 0;
 
         $animaisAbate = [];
@@ -40,10 +41,8 @@ class DashboardController extends AbstractController
                 ->y;
 
             /*
-             * Animal jovem:
-             * menos de 2 anos
+             * Animal jovem
              */
-
             if ($idade < 2) {
 
                 $totalAnimaisJovens++;
@@ -51,11 +50,8 @@ class DashboardController extends AbstractController
             }
 
             /*
-             * Animal para abate:
-             * mais de 5 anos OU
-             * peso acima de 500kg
+             * Animal para abate
              */
-
             if (
 
                 $idade >= 5 ||
