@@ -28,10 +28,13 @@ RUN npm run build
 
 RUN php bin/console cache:clear --env=prod || true
 
-RUN php bin/console doctrine:migrations:migrate \
-    --no-interaction \
-    --env=prod || true
+RUN php bin/console doctrine:migrations:migrate \ --no-interaction \ --env=prod || true
 
 EXPOSE 10000
 
-CMD php -S 0.0.0.0:$PORT -t public
+#CMD php -S 0.0.0.0:$PORT -t public
+
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
