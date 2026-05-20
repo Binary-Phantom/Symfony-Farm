@@ -17,12 +17,21 @@ WORKDIR /var/www/app
 
 COPY . .
 
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
+
 RUN composer install --no-dev --optimize-autoloader
 
 RUN npm install
 
 RUN npm run build
 
-RUN php bin/console cache:clear --env=prod
+RUN php bin/console cache:clear --env=prod || true
+
+RUN php bin/console doctrine:migrations:migrate \
+    --no-interaction \
+    --env=prod || true
+
+EXPOSE 10000
 
 CMD php -S 0.0.0.0:$PORT -t public
