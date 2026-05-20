@@ -1,0 +1,76 @@
+{{ form_start(form) }}
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <div class="mb-3">
+
+            {{ form_label(form.nome) }}
+
+            {{ form_widget(form.nome, {
+                attr: {
+                    class: 'form-control'
+                }
+            }) }}
+
+        </div>
+
+        <div class="mb-3">
+
+            {{ form_label(form.tamanho) }}
+
+            {{ form_widget(form.tamanho, {
+                attr: {
+                    class: 'form-control'
+                }
+            }) }}
+
+        </div>
+
+        <div class="mb-3">
+
+            {{ form_label(form.responsavel) }}
+
+            {{ form_widget(form.responsavel, {
+                attr: {
+                    class: 'form-control'
+                }
+            }) }}
+
+        </div>
+
+        <div class="mb-3">
+
+            {{ form_label(form.veterinarios) }}
+
+            {{ form_widget(form.veterinarios, {
+                attr: {
+                    class: 'form-select'
+                }
+            }) }}
+
+        </div>
+
+    </div>
+
+    <div class="card-footer d-flex justify-content-end gap-2">
+
+        <a
+            href="{{ path('app_fazenda_index') }}"
+            class="btn btn-secondary"
+        >
+            Voltar
+        </a>
+
+        <button class="btn btn-success">
+
+            Salvar
+
+        </button>
+
+    </div>
+
+</div>
+
+{{ form_end(form) }}

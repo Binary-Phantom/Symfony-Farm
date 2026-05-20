@@ -1,0 +1,134 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}
+Fazendas
+{% endblock %}
+
+{% block body %}
+
+<div class="d-flex justify-content-between mb-4">
+
+    <h1>Fazendas</h1>
+
+    <a
+        href="{{ path('app_fazenda_new') }}"
+        class="btn btn-success"
+    >
+        Nova Fazenda
+    </a>
+
+</div>
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover">
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Tamanho</th>
+                        <th>Responsável</th>
+                        <th>Veterinário(s)</th>
+                        <th>Ações</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for fazenda in pagination %}
+
+<tr>
+
+    <td>
+        {{ fazenda.id }}
+    </td>
+
+    <td>
+        {{ fazenda.nome }}
+    </td>
+
+    <td>
+        {{ fazenda.tamanho }} HA
+    </td>
+
+    <td>
+        {{ fazenda.responsavel }}
+    </td>
+
+    <td>
+
+        {% for veterinario in fazenda.veterinarios %}
+
+            <span class="badge bg-primary mb-1">
+
+                {{ veterinario.nome }}
+
+                -
+
+                CRMV: {{ veterinario.crmv }}
+
+            </span>
+
+            <br>
+
+        {% else %}
+
+            <span class="text-muted">
+
+                Nenhum veterinário
+
+            </span>
+
+        {% endfor %}
+
+    </td>
+
+    <td>
+
+        {% include 'components/table-actions.html.twig' with {
+
+            show_path: path(
+                'app_fazenda_show',
+                {id: fazenda.id}
+            ),
+
+            edit_path: path(
+                'app_fazenda_edit',
+                {id: fazenda.id}
+            ),
+
+            delete_path: path(
+                'app_fazenda_delete',
+                {id: fazenda.id}
+            ),
+
+            csrf_token: csrf_token(
+                'delete' ~ fazenda.id
+            )
+
+                     } %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

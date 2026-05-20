@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}Symfony Farm{% endblock %}</title>
+
+    {{ encore_entry_link_tags('app') }}
+
+</head>
+
+<body class="bg-light">
+
+    {% include 'components/navbar.html.twig' %}
+
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <div class="col-lg-2 p-0">
+                {% include 'components/sidebar.html.twig' %}
+            </div>
+
+            <div class="col-lg-10 p-4">
+
+                {% include 'components/alerts.html.twig' %}
+
+                {% block body %}{% endblock %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {{ encore_entry_script_tags('app') }}
+
+</body>
+
+</html>

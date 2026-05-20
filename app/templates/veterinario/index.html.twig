@@ -1,0 +1,103 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}
+Veterinários
+{% endblock %}
+
+{% block body %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h1>Veterinários</h1>
+
+    <a
+        href="{{ path('app_veterinario_new') }}"
+        class="btn btn-success"
+    >
+        Novo Veterinário
+    </a>
+
+</div>
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover">
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>CRMV</th>
+                        <th>Ações</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for veterinario in pagination %}
+
+                    <tr>
+
+                        <td>{{ veterinario.id }}</td>
+
+                        <td>{{ veterinario.nome }}</td>
+
+                        <td>{{ veterinario.crmv }}</td>
+
+                        <td class="d-flex gap-2">
+
+                            <a
+                                href="{{ path('app_veterinario_show', {
+                                    id: veterinario.id
+                                }) }}"
+                                class="btn btn-info btn-sm"
+                            >
+                                Ver
+                            </a>
+
+                            <a
+                                href="{{ path('app_veterinario_edit', {
+                                    id: veterinario.id
+                                }) }}"
+                                class="btn btn-warning btn-sm"
+                            >
+                                Editar
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="4">
+
+                            Nenhum veterinário encontrado.
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% include 'components/pagination.html.twig' %}
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+
+<title>Edit Fazenda</title>
+
+{% block body %}
+    <h1>Edit Fazenda</h1>
+
+    {{ include('fazenda/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_fazenda_index') }}">back to list</a>
+
+    {{ include('fazenda/_delete_form.html.twig') }}
+{% endblock %}

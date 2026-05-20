@@ -1,0 +1,91 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block body %}
+
+<div class="d-flex justify-content-between mb-4">
+
+    <h1>Gados</h1>
+
+    <a
+        href="{{ path('app_gado_new') }}"
+        class="btn btn-success"
+    >
+        Novo Gado
+    </a>
+
+</div>
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover">
+
+                <thead>
+
+                    <tr>
+                        <th>Código</th>
+                        <th>Peso</th>
+                        <th>Leite</th>
+                        <th>Ração</th>
+                        <th>Fazenda</th>
+                        <th>Ações</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for gado in pagination %}
+
+                    <tr>
+
+                        <td>{{ gado.codigo }}</td>
+
+                        <td>{{ gado.peso }} Kg</td>
+
+                        <td>{{ gado.leiteSemana }} L</td>
+
+                        <td>{{ gado.racaoSemana }} Kg</td>
+
+                        <td>{{ gado.fazenda.nome }}</td>
+
+                        <td class="d-flex gap-2">
+
+                            <a
+                                href="{{ path('app_gado_show', {
+                                    id: gado.id
+                                }) }}"
+                                class="btn btn-info btn-sm"
+                            >
+                                Ver
+                            </a>
+
+                            <a
+                                href="{{ path('app_gado_edit', {
+                                    id: gado.id
+                                }) }}"
+                                class="btn btn-warning btn-sm"
+                            >
+                                Editar
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

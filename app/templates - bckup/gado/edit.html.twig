@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+
+<title>Edit Gado</title>
+
+{% block body %}
+    <h1>Edit Gado</h1>
+
+    {{ include('gado/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_gado_index') }}">back to list</a>
+
+    {{ include('gado/_delete_form.html.twig') }}
+{% endblock %}

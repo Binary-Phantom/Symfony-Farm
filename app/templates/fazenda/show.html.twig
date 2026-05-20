@@ -1,0 +1,25 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block body %}
+
+<h1 class="mb-4">
+
+    Detalhes da Fazenda
+
+</h1>
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <p><strong>Nome:</strong> {{ fazenda.nome }}</p>
+
+        <p><strong>Tamanho:</strong> {{ fazenda.tamanho }} HA</p>
+
+        <p><strong>Responsável:</strong> {{ fazenda.responsavel }}</p>
+
+    </div>
+
+</div>
+
+{% endblock %}

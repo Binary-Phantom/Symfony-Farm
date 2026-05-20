@@ -1,0 +1,108 @@
+{{ form_start(form) }}
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-6 mb-3">
+
+                {{ form_label(form.codigo) }}
+
+                {{ form_widget(form.codigo, {
+                    attr: {
+                        class: 'form-control'
+                    }
+                }) }}
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                {{ form_label(form.peso) }}
+
+                {{ form_widget(form.peso, {
+                    attr: {
+                        class: 'form-control'
+                    }
+                }) }}
+
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-6 mb-3">
+
+                {{ form_label(form.leiteSemana) }}
+
+                {{ form_widget(form.leiteSemana, {
+                    attr: {
+                        class: 'form-control'
+                    }
+                }) }}
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                {{ form_label(form.racaoSemana) }}
+
+                {{ form_widget(form.racaoSemana, {
+                    attr: {
+                        class: 'form-control'
+                    }
+                }) }}
+
+            </div>
+
+        </div>
+
+        <div class="mb-3">
+
+            {{ form_label(form.nascimento) }}
+
+            {{ form_widget(form.nascimento, {
+                attr: {
+                    class: 'form-control'
+                }
+            }) }}
+
+        </div>
+
+        <div class="mb-3">
+
+            {{ form_label(form.fazenda) }}
+
+            {{ form_widget(form.fazenda, {
+                attr: {
+                    class: 'form-select'
+                }
+            }) }}
+
+        </div>
+
+    </div>
+
+    <div class="card-footer d-flex justify-content-end gap-2">
+
+        <a
+            href="{{ path('app_gado_index') }}"
+            class="btn btn-secondary"
+        >
+            Voltar
+        </a>
+
+        <button class="btn btn-success">
+
+            Salvar
+
+        </button>
+
+    </div>
+
+</div>
+
+{{ form_end(form) }}

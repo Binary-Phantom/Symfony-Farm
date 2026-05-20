@@ -1,0 +1,30 @@
+<div class="d-flex gap-2">
+
+    <a
+        href="{{ edit_path }}"
+        class="btn btn-sm btn-warning"
+    >
+        Editar
+    </a>
+
+    <form
+        method="post"
+        action="{{ delete_path }}"
+        onsubmit="return confirm('Deseja excluir este registro?');"
+    >
+
+        <input
+            type="hidden"
+            name="_token"
+            value="{{ csrf_token(csrf_id) }}"
+        >
+
+        <button class="btn btn-sm btn-danger">
+
+            Excluir
+
+        </button>
+
+    </form>
+
+</div>

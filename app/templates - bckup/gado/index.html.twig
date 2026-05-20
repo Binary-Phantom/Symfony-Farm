@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<title>Gado index</title>
+
+{% block body %}
+    <h1>Gado index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Codigo</th>
+                <th>LeiteSemana</th>
+                <th>RacaoSemana</th>
+                <th>Peso</th>
+                <th>Nascimento</th>
+                <th>Abatido</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for gado in gados %}
+            <tr>
+                <td>{{ gado.id }}</td>
+                <td>{{ gado.codigo }}</td>
+                <td>{{ gado.leiteSemana }}</td>
+                <td>{{ gado.racaoSemana }}</td>
+                <td>{{ gado.peso }}</td>
+                <td>{{ gado.nascimento ? gado.nascimento|date('Y-m-d') : '' }}</td>
+                <td>{{ gado.abatido ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_gado_show', {'id': gado.id}) }}">show</a>
+                    <a href="{{ path('app_gado_edit', {'id': gado.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gado_new') }}">Create new</a>
+{% endblock %}

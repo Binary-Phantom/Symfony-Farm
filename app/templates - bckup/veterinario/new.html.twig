@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+
+<title>New Veterinario</title>
+
+{% block body %}
+    <h1>Create new Veterinario</h1>
+
+    {{ include('veterinario/_form.html.twig') }}
+
+    <a href="{{ path('app_veterinario_index') }}">back to list</a>
+{% endblock %}

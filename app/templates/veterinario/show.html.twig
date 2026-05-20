@@ -1,0 +1,38 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}
+Detalhes Veterinário
+{% endblock %}
+
+{% block body %}
+
+<h1 class="mb-4">
+
+    Detalhes do Veterinário
+
+</h1>
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <p>
+            <strong>ID:</strong>
+            {{ veterinario.id }}
+        </p>
+
+        <p>
+            <strong>Nome:</strong>
+            {{ veterinario.nome }}
+        </p>
+
+        <p>
+            <strong>CRMV:</strong>
+            {{ veterinario.crmv }}
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

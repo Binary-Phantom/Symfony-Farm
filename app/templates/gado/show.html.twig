@@ -1,0 +1,29 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block body %}
+
+<h1 class="mb-4">
+
+    Detalhes do Gado
+
+</h1>
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <p><strong>Código:</strong> {{ gado.codigo }}</p>
+
+        <p><strong>Peso:</strong> {{ gado.peso }} Kg</p>
+
+        <p><strong>Leite:</strong> {{ gado.leiteSemana }} L</p>
+
+        <p><strong>Ração:</strong> {{ gado.racaoSemana }} Kg</p>
+
+        <p><strong>Fazenda:</strong> {{ gado.fazenda.nome }}</p>
+
+    </div>
+
+</div>
+
+{% endblock %}

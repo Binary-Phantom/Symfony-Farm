@@ -1,0 +1,26 @@
+@use "~bootstrap/scss/bootstrap";
+
+body {
+
+    background-color: #eef2f7;
+
+}
+
+.nav-link {
+
+    border-radius: 12px;
+    transition: all 0.2s ease;
+
+}
+
+.nav-link:hover {
+
+    background-color: rgba(255,255,255,0.1);
+
+}
+
+.card {
+
+    border-radius: 20px;
+
+}
