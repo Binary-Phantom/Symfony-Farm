@@ -51,17 +51,29 @@ class DashboardController extends AbstractController
             /*
              * Animal pra abate
              */
-            if (
+            $racaoDia = $gado->getRacaoSemana() / 7;
 
-                $idade >= 5 ||
+$arrobas = $gado->getPeso() / 15;
 
-                $gado->getPeso() >= 500
+    if (
 
-            ) {
+        $idade > 5
+    ||
+        $gado->getLeiteSemana() < 40
+    ||
+        (
+          $gado->getLeiteSemana() < 70
+             &&
+          $racaoDia > 50
+    )
+    ||
+        $arrobas > 18
 
-                $animaisAbate[] = $gado;
+    ) {
 
-            }
+    $animaisAbate[] = $gado;
+
+}
         }
 
 

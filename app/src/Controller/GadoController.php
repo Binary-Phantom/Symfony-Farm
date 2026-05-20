@@ -174,41 +174,139 @@ final class GadoController extends AbstractController
         ]);
     }
 
-    /*abater animal*/
-    #[Route(
-        '/{id}/abater',
-        name: 'app_gado_abater',
-        methods: ['POST']
-    )]
-    public function abater(
-        Request $request,
-        Gado $gado,
-        EntityManagerInterface $entityManager
-    ): Response {
+    /*
+ * Abater animal
+ */
+#[Route('/{id}/abater', name: 'app_gado_abater', methods: ['POST'])]
+public function abater(
+    Request $request,
+    Gado $gado,
+    EntityManagerInterface $entityManager
+): Response {
 
-        if (
+    if (
 
-            $this->isCsrfTokenValid(
-                'abater'.$gado->getId(),
-                $request->request->get('_token')
-            )
+        !$this->isCsrfTokenValid(
+            'abater'.$gado->getId(),
+            $request->request->get('_token')
+        )
 
-        ) {
+    ) {
 
-            $gado->setAbatido(true);
-
-            $entityManager->flush();
-
-            $this->addFlash(
-                'warning',
-                'Animal abatido com sucesso.'
-            );
-        }
+        $this->addFlash(
+            'danger',
+            'Token inválido.'
+        );
 
         return $this->redirectToRoute(
             'app_gado_index'
         );
     }
+
+    /*
+     * Calcula idade
+     */
+    $idade = $gado
+        ->getNascimento()
+        ->diff(new \DateTime());
+
+    $anos = $idade->y;
+
+    /*
+     * Litros por semana
+     */
+    $leiteSemana = $gado->getLeiteSemana();
+
+    /*
+     * Ração por dia
+     */
+    $racaoDia = $gado->getRacaoSemana() / 7;
+
+    /*
+     * Arrobas
+     * 1 arroba = 15kg
+     */
+    $arrobas = $gado->getPeso() / 15;
+
+    /*
+     * Regras para abate
+     */
+    $podeAbater = false;
+
+    /*
+     * Mais de 5 anos
+     */
+    if ($anos > 5) {
+
+        $podeAbater = true;
+
+    }
+
+    /*
+     * Menos de 40 litros por semana
+     */
+    if ($leiteSemana < 40) {
+
+        $podeAbater = true;
+
+    }
+
+    /*
+     * Menos de 70 litros
+     * e mais de 50kg de ração por dia
+     */
+    if (
+
+        $leiteSemana < 70
+        &&
+        $racaoDia > 50
+
+    ) {
+
+        $podeAbater = true;
+
+    }
+
+    /*
+     * Mais de 18 arrobas
+     */
+    if ($arrobas > 18) {
+
+        $podeAbater = true;
+
+    }
+
+    /*
+     * Impede abate inválido
+     */
+    if (!$podeAbater) {
+
+        $this->addFlash(
+            'danger',
+            'Este animal não atende aos critérios para abate.'
+        );
+
+        return $this->redirectToRoute(
+            'app_gado_index'
+        );
+    }
+
+    /*
+     * Realiza o abate
+     */
+    $gado->setAbatido(true);
+
+    $entityManager->flush();
+
+    $this->addFlash(
+        'warning',
+        'Animal abatido com sucesso.'
+    );
+
+    return $this->redirectToRoute(
+        'app_gado_index'
+    );
+}
 
     /* remove*/
 
