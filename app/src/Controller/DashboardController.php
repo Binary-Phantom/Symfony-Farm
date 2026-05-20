@@ -64,6 +64,28 @@ class DashboardController extends AbstractController
             }
         }
 
+
+        $resumoFazendas = [];
+
+foreach ($fazendaRepository->findAll() as $fazenda) {
+
+    $resumoFazendas[] = [
+
+        'nome' => $fazenda->getNome(),
+
+        'responsavel' =>
+            $fazenda->getResponsavel(),
+
+        'tamanho' =>
+            $fazenda->getTamanho(),
+
+        'gados' =>
+            $gadoRepository->contarVivosPorFazenda(
+                $fazenda->getId()
+            )
+
+    ];
+}
         return $this->render(
             'dashboard/index.html.twig',
             [
@@ -78,8 +100,7 @@ class DashboardController extends AbstractController
                 'totalAbate' =>
                     count($animaisAbate),
 
-                'fazendas' =>
-                    $fazendaRepository->findAll(),
+                'fazendas' => $resumoFazendas,
 
                 'animaisAbate' =>
                     $animaisAbate

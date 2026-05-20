@@ -279,7 +279,7 @@ Dashboard
 
                                     <span class="badge bg-dark">
 
-                                        {{ fazenda.gados|length }}
+                                        {{ fazenda.gados }}
 
                                     </span>
 
@@ -421,6 +421,13 @@ Dashboard
 
                                     {{ gado.peso }} Kg
 
+                                    <br>
+
+                                        <small class="text-muted">
+
+                                            {{ (gado.peso / 15)|number_format(1, ',', '.') }} @
+
+                                        </small>
                                 </td>
 
                                 <td>

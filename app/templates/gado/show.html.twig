@@ -14,7 +14,11 @@
 
         <p><strong>Código:</strong> {{ gado.codigo }}</p>
 
-        <p><strong>Peso:</strong> {{ gado.peso }} Kg</p>
+        <p><strong>Peso:</strong> {{ gado.peso }} Kg (
+
+            {{ (gado.peso / 15)|number_format(1, ',', '.') }} @)
+        
+        </p>
 
         <p><strong>Leite:</strong> {{ gado.leiteSemana }} L</p>
 

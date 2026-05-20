@@ -71,7 +71,18 @@
 
                         <td>{{ gado.codigo }}</td>
 
-                        <td>{{ gado.peso }} Kg</td>
+                        <td>
+
+                            {{ gado.peso }} Kg
+<br>
+
+                            <small class="text-muted">
+
+                                {{ (gado.peso / 15)|number_format(1, ',', '.') }} @
+
+                            </small>
+
+                        </td>
 
 
                         <td>

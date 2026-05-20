@@ -46,11 +46,8 @@ final class GadoController extends AbstractController
     }
 
     /* animais abatidos */
-    #[Route(
-        '/abatidos',
-        name: 'app_gado_abatidos',
-        methods: ['GET']
-    )]
+    #[Route('/abatidos', name: 'app_gado_abatidos', methods: ['GET'])]
+    
     public function abatidos(
         GadoRepository $gadoRepository,
         PaginatorInterface $paginator,
