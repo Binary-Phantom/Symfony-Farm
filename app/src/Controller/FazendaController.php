@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Fazenda;
 use App\Form\FazendaType;
 use App\Repository\FazendaRepository;
+use App\Repository\GadoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,6 +42,68 @@ final class FazendaController extends AbstractController
             'pagination' => $pagination,
 
         ]);
+    }
+
+    #[Route('/resumo', name: 'app_fazenda_resumo', methods: ['GET'])]
+    public function resumo(
+        FazendaRepository $fazendaRepository,
+        GadoRepository $gadoRepository
+    ): Response {
+
+        $fazendas = $fazendaRepository->findAll();
+
+        $nomes = [];
+
+        $quantidadeAnimais = [];
+
+        $producaoLeite = [];
+
+        $consumoRacao = [];
+
+        foreach ($fazendas as $fazenda) {
+
+            $gados = $gadoRepository->findBy([
+                'fazenda' => $fazenda,
+                'abatido' => false
+            ]);
+
+            $nomes[] = $fazenda->getNome();
+
+            $quantidadeAnimais[] = count($gados);
+
+            $totalLeite = 0;
+
+            $totalRacao = 0;
+
+            foreach ($gados as $gado) {
+
+                $totalLeite += $gado->getLeiteSemana();
+
+                $totalRacao += $gado->getRacaoSemana();
+            }
+
+            $producaoLeite[] = $totalLeite;
+
+            $consumoRacao[] = $totalRacao;
+        }
+
+        return $this->render(
+            'fazenda/resumo.html.twig',
+            [
+
+                'nomes' => json_encode($nomes),
+
+                'quantidadeAnimais' =>
+                    json_encode($quantidadeAnimais),
+
+                'producaoLeite' =>
+                    json_encode($producaoLeite),
+
+                'consumoRacao' =>
+                    json_encode($consumoRacao)
+
+            ]
+        );
     }
 
     #[Route('/new', name: 'app_fazenda_new', methods: ['GET', 'POST'])]
@@ -82,7 +145,7 @@ final class FazendaController extends AbstractController
 
         ]);
     }
-
+    /* tela de detalhes da fazenda */
     #[Route('/{id}', name: 'app_fazenda_show', methods: ['GET'])]
     public function show(Fazenda $fazenda): Response
     {

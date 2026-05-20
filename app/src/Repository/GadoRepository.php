@@ -16,7 +16,7 @@ class GadoRepository extends ServiceEntityRepository
         parent::__construct($registry, Gado::class);
     }
 
-    //    /**
+    /*
     //     * @return Gado[] Returns an array of Gado objects
     //     */
     //    public function findByExampleField($value): array
@@ -30,7 +30,7 @@ class GadoRepository extends ServiceEntityRepository
     //            ->getResult()
     //        ;
     //    }
-
+    //       teste aaaaaaaaaa
     //    public function findOneBySomeField($value): ?Gado
     //    {
     //        return $this->createQueryBuilder('g')
@@ -39,7 +39,7 @@ class GadoRepository extends ServiceEntityRepository
     //            ->getQuery()
     //            ->getOneOrNullResult()
     //        ;
-    //    }
+    //    }*/
     public function existeCodigoVivo(int $codigo): bool
     {
         return (bool) $this->createQueryBuilder('g')
@@ -49,5 +49,22 @@ class GadoRepository extends ServiceEntityRepository
             ->setParameter('codigo', $codigo)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function contarVivosPorFazenda(int $fazendaId): int
+{
+    return (int) $this->createQueryBuilder('g')
+
+        ->select('COUNT(g.id)')
+
+        ->where('g.fazenda = :fazenda')
+
+        ->andWhere('g.abatido = false')
+
+        ->setParameter('fazenda', $fazendaId)
+
+        ->getQuery()
+
+        ->getSingleScalarResult();
     }
 }

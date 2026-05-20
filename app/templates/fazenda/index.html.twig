@@ -6,16 +6,41 @@ Fazendas
 
 {% block body %}
 
-<div class="d-flex justify-content-between mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-    <h1>Fazendas</h1>
+    <div>
 
-    <a
-        href="{{ path('app_fazenda_new') }}"
-        class="btn btn-success"
-    >
-        Nova Fazenda
-    </a>
+        <h1 class="fw-bold">
+
+            Fazendas
+
+        </h1>
+
+        <p class="text-muted">
+
+            Gerenciamento das propriedades.
+
+        </p>
+
+    </div>
+
+    <div class="d-flex gap-2">
+
+        <a
+            href="{{ path('app_fazenda_resumo') }}"
+            class="btn btn-primary"
+        >
+            Resumo
+        </a>
+
+        <a
+            href="{{ path('app_fazenda_new') }}"
+            class="btn btn-success"
+        >
+            Nova Fazenda
+        </a>
+
+    </div>
 
 </div>
 

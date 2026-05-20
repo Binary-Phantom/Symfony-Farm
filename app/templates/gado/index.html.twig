@@ -2,16 +2,42 @@
 
 {% block body %}
 
-<div class="d-flex justify-content-between mb-4">
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4">
 
-    <h1>Gados</h1>
+    <div>
 
-    <a
-        href="{{ path('app_gado_new') }}"
-        class="btn btn-success"
-    >
-        Novo Gado
-    </a>
+        <h1 class="fw-bold mb-1">
+
+            Rebanho Ativo
+
+        </h1>
+
+        <p class="text-muted mb-0">
+
+            Controle completo dos animais vivos da fazenda.
+
+        </p>
+
+    </div>
+
+    <div class="d-flex gap-2 mt-3 mt-lg-0">
+
+
+        <a
+            href="{{ path('app_gado_abatidos') }}"
+            class="btn btn-danger"
+        >
+            Gados Abatidos
+        </a>
+
+        <a
+            href="{{ path('app_gado_new') }}"
+            class="btn btn-success"
+        >
+            Novo Gado
+        </a>
+
+    </div>
 
 </div>
 
@@ -28,6 +54,7 @@
                     <tr>
                         <th>Código</th>
                         <th>Peso</th>
+                        <th>Idade</th>
                         <th>Leite</th>
                         <th>Ração</th>
                         <th>Fazenda</th>
@@ -44,7 +71,57 @@
 
                         <td>{{ gado.codigo }}</td>
 
-                        <td>{{ gado.peso }} Kg</td>
+                        <td>
+
+                            {{ gado.peso }} Kg
+<br>
+
+                            <small class="text-muted">
+
+                                {{ (gado.peso / 15)|number_format(1, ',', '.') }} @
+
+                            </small>
+
+                        </td>
+
+
+                        <td>
+
+    {% set idade = date().diff(gado.nascimento) %}
+
+    <span class="badge bg-info text-dark p-2">
+
+        {{ idade.y }}
+
+                                 {% if idade.y == 1 %}
+                                    ano
+                                 {% else %}
+                                    anos
+                                {% endif %}
+
+                                    {{ idade.m }}
+
+                                    {% if idade.m == 1 %}
+                                        mês
+                                    {% else %}
+                                         meses
+                                    {% endif %}
+
+                                        e
+
+                                    {{ idade.d }}
+
+                                    {% if idade.d == 1 %}
+                                        dia
+                                    {% else %}
+                                        dias
+                                {% endif %}
+
+                            </span>
+
+                        </td>
+
+
 
                         <td>{{ gado.leiteSemana }} L</td>
 
@@ -52,27 +129,81 @@
 
                         <td>{{ gado.fazenda.nome }}</td>
 
-                        <td class="d-flex gap-2">
+                        <td class="d-flex gap-2 flex-wrap">
 
-                            <a
-                                href="{{ path('app_gado_show', {
-                                    id: gado.id
-                                }) }}"
-                                class="btn btn-info btn-sm"
-                            >
-                                Ver
-                            </a>
+    <a
+        href="{{ path('app_gado_show', {id: gado.id}) }}"
+        class="btn btn-sm btn-primary"
+    >
+        Ver
+    </a>
 
-                            <a
-                                href="{{ path('app_gado_edit', {
-                                    id: gado.id
-                                }) }}"
-                                class="btn btn-warning btn-sm"
-                            >
-                                Editar
-                            </a>
+    <a
+        href="{{ path('app_gado_edit', {id: gado.id}) }}"
+        class="btn btn-sm btn-warning"
+    >
+        Editar
+    </a>
 
-                        </td>
+    {# REGRAS PARA ABATE  #}
+
+    {% set idade = date().diff(gado.nascimento) %}
+
+    {% set anos = idade.y %}
+
+    {% set leiteSemana = gado.leiteSemana %}
+
+    {% set racaoDia = gado.racaoSemana / 7 %}
+
+    {% set arrobas = gado.peso / 15 %}
+
+    {% set podeAbater = false %}
+
+    {# Mais de 5 anos #}
+    {% if anos > 5 %}
+        {% set podeAbater = true %}
+    {% endif %}
+
+    {# Menos de 40L semana #}
+    {% if leiteSemana < 40 %}
+        {% set podeAbater = true %}
+    {% endif %}
+
+    {# Menos de 70L + mais de 50kg/dia #}
+    {% if leiteSemana < 70 and racaoDia > 50 %}
+        {% set podeAbater = true %}
+    {% endif %}
+
+    {# Mais de 18 arrobas #}
+    {% if arrobas > 18 %}
+        {% set podeAbater = true %}
+    {% endif %}
+
+    {% if podeAbater %}
+
+        <form
+            method="post"
+            action="{{ path('app_gado_abater', {id: gado.id}) }}"
+            onsubmit="return confirm('Deseja realmente abater este animal?');"
+        >
+
+            <input
+                type="hidden"
+                name="_token"
+                value="{{ csrf_token('abater' ~ gado.id) }}"
+            >
+
+            <button
+                class="btn btn-sm btn-danger"
+            >
+                Abater
+            </button>
+
+        </form>
+
+    {% endif %}
+
+</td>
 
                     </tr>
 

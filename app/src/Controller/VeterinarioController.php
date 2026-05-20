@@ -43,6 +43,7 @@ final class VeterinarioController extends AbstractController
         ]);
     }
 
+    /* nova tela de cadastro de veterinário */
     #[Route('/new', name: 'app_veterinario_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -62,7 +63,7 @@ final class VeterinarioController extends AbstractController
             'form' => $form,
         ]);
     }
-
+    /* tela de detalhes do veterinário (lembrar de tentar por foto depois sla) */
     #[Route('/{id}', name: 'app_veterinario_show', methods: ['GET'])]
     public function show(Veterinario $veterinario): Response
     {
@@ -70,7 +71,7 @@ final class VeterinarioController extends AbstractController
             'veterinario' => $veterinario,
         ]);
     }
-
+    /*editar veterinário*/
     #[Route('/{id}/edit', name: 'app_veterinario_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Veterinario $veterinario, EntityManagerInterface $entityManager): Response
     {

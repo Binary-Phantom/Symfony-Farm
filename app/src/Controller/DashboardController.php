@@ -6,7 +6,7 @@ use App\Repository\FazendaRepository;
 use App\Repository\GadoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Attribute\Route; /*lembrar de sempre usar Attribute Route* para evitar problemas de cache (BURRO)*/
 
 class DashboardController extends AbstractController
 {
@@ -16,14 +16,14 @@ class DashboardController extends AbstractController
         FazendaRepository $fazendaRepository
     ): Response {
 
+        /*Apenas animais vivos
+         */
         $gados = $gadoRepository->findBy([
             'abatido' => false
-            ]);
+        ]);
 
         $totalLeite = 0;
-
         $totalRacao = 0;
-
         $totalAnimaisJovens = 0;
 
         $animaisAbate = [];
@@ -40,35 +40,65 @@ class DashboardController extends AbstractController
                 ->y;
 
             /*
-             * Animal jovem:
-             * menos de 2 anos
+             * Animal jovem
              */
+            if ($idade <= 1 && $gado->getRacaoSemana() > 500
 
-            if ($idade < 2) {
-
-                $totalAnimaisJovens++;
+            ) {
+                    $totalAnimaisJovens++;
 
             }
 
             /*
-             * Animal para abate:
-             * mais de 5 anos OU
-             * peso acima de 500kg
+             * Animal pra abate
              */
+            $racaoDia = $gado->getRacaoSemana() / 7;
 
-            if (
+$arrobas = $gado->getPeso() / 15;
 
-                $idade >= 5 ||
+    if (
 
-                $gado->getPeso() >= 500
+        $idade > 5
+    ||
+        $gado->getLeiteSemana() < 40
+    ||
+        (
+          $gado->getLeiteSemana() < 70
+             &&
+          $racaoDia > 50
+    )
+    ||
+        $arrobas > 18
 
-            ) {
+    ) {
 
-                $animaisAbate[] = $gado;
+    $animaisAbate[] = $gado;
 
-            }
+}
         }
 
+
+        $resumoFazendas = [];
+
+foreach ($fazendaRepository->findAll() as $fazenda) {
+
+    $resumoFazendas[] = [
+
+        'nome' => $fazenda->getNome(),
+
+        'responsavel' =>
+            $fazenda->getResponsavel(),
+
+        'tamanho' =>
+            $fazenda->getTamanho(),
+
+        'gados' =>
+            $gadoRepository->contarVivosPorFazenda(
+                $fazenda->getId()
+            )
+
+    ];
+}
         return $this->render(
             'dashboard/index.html.twig',
             [
@@ -83,8 +113,7 @@ class DashboardController extends AbstractController
                 'totalAbate' =>
                     count($animaisAbate),
 
-                'fazendas' =>
-                    $fazendaRepository->findAll(),
+                'fazendas' => $resumoFazendas,
 
                 'animaisAbate' =>
                     $animaisAbate

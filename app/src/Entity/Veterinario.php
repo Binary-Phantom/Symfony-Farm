@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[UniqueEntity(
     fields: ['crmv'],
-    message: 'Este CRMV já está em uso.'
+    message: 'CRMV já cadastrado!.'
 )]
 
 class Veterinario

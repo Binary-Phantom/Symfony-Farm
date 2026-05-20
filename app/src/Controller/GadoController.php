@@ -15,6 +15,9 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/gado')]
 final class GadoController extends AbstractController
 {
+    /*
+     * Lista animais vivos
+     */
     #[Route('/', name: 'app_gado_index', methods: ['GET'])]
     public function index(
         GadoRepository $gadoRepository,
@@ -24,6 +27,7 @@ final class GadoController extends AbstractController
 
         $query = $gadoRepository
             ->createQueryBuilder('g')
+            ->where('g.abatido = false')
             ->orderBy('g.id', 'DESC');
 
         $pagination = $paginator->paginate(
@@ -43,6 +47,44 @@ final class GadoController extends AbstractController
         ]);
     }
 
+    /*
+     * Lista animais abatidos
+     */
+    #[Route('/abatidos', name: 'app_gado_abatidos', methods: ['GET'])]
+    public function abatidos(
+        GadoRepository $gadoRepository,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
+
+        $query = $gadoRepository
+            ->createQueryBuilder('g')
+            ->where('g.abatido = true')
+            ->orderBy('g.id', 'DESC');
+
+        $pagination = $paginator->paginate(
+
+            $query,
+
+            $request->query->getInt('page', 1),
+
+            10
+
+        );
+
+        return $this->render(
+            'gado/abatidos.html.twig',
+            [
+
+                'pagination' => $pagination
+
+            ]
+        );
+    }
+
+    /*
+     * Cadastro de animal
+     */
     #[Route('/new', name: 'app_gado_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
@@ -51,12 +93,34 @@ final class GadoController extends AbstractController
 
         $gado = new Gado();
 
+        /*
+         * Animal nasce vivo
+         */
+        $gado->setAbatido(false);
+
         $form = $this->createForm(
             GadoType::class,
             $gado
         );
 
         $form->handleRequest($request);
+
+        /*
+         * Validação de data futura
+         */
+        if (
+
+            $form->isSubmitted()
+            &&
+            $gado->getNascimento() > new \DateTime()
+
+        ) {
+
+            $this->addFlash(
+                'danger',
+                'Não é possível cadastrar um animal com data futura.'
+            );
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -83,6 +147,9 @@ final class GadoController extends AbstractController
         ]);
     }
 
+    /*
+     * Detalhes do animal
+     */
     #[Route('/{id}', name: 'app_gado_show', methods: ['GET'])]
     public function show(Gado $gado): Response
     {
@@ -93,6 +160,9 @@ final class GadoController extends AbstractController
         ]);
     }
 
+    /*
+     * Editar animal
+     */
     #[Route('/{id}/edit', name: 'app_gado_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
@@ -106,6 +176,23 @@ final class GadoController extends AbstractController
         );
 
         $form->handleRequest($request);
+
+        /*
+         * Validação de data futura
+         */
+        if (
+
+            $form->isSubmitted()
+            &&
+            $gado->getNascimento() > new \DateTime()
+
+        ) {
+
+            $this->addFlash(
+                'danger',
+                'Não é possível cadastrar um animal com data futura.'
+            );
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -130,6 +217,142 @@ final class GadoController extends AbstractController
         ]);
     }
 
+    /*
+     * Abater animal
+     */
+    #[Route('/{id}/abater', name: 'app_gado_abater', methods: ['POST'])]
+    public function abater(
+        Request $request,
+        Gado $gado,
+        EntityManagerInterface $entityManager
+    ): Response {
+
+        if (
+
+            !$this->isCsrfTokenValid(
+                'abater'.$gado->getId(),
+                $request->request->get('_token')
+            )
+
+        ) {
+
+            $this->addFlash(
+                'danger',
+                'Token inválido.'
+            );
+
+            return $this->redirectToRoute(
+                'app_gado_index'
+            );
+        }
+
+        /*
+         * Calcula idade
+         */
+        $idade = $gado
+            ->getNascimento()
+            ->diff(new \DateTime());
+
+        $anos = $idade->y;
+
+        /*
+         * Litros semana
+         */
+        $leiteSemana = $gado->getLeiteSemana();
+
+        /*
+         * Ração por dia
+         */
+        $racaoDia = $gado->getRacaoSemana() / 7;
+
+        /*
+         * Arrobas
+         */
+        $arrobas = $gado->getPeso() / 15;
+
+        /*
+         * Verifica regras
+         */
+        $podeAbater = false;
+
+        /*
+         * Mais de 5 anos
+         */
+        if ($anos > 5) {
+
+            $podeAbater = true;
+
+        }
+
+        /*
+         * Menos de 40L
+         */
+        if ($leiteSemana < 40) {
+
+            $podeAbater = true;
+
+        }
+
+        /*
+         * Menos de 70L
+         * e mais de 50kg/dia
+         */
+        if (
+
+            $leiteSemana < 70
+            &&
+            $racaoDia > 50
+
+        ) {
+
+            $podeAbater = true;
+
+        }
+
+        /*
+         * Mais de 18 arrobas
+         */
+        if ($arrobas > 18) {
+
+            $podeAbater = true;
+
+        }
+
+        /*
+         * Impede abate inválido
+         */
+        if (!$podeAbater) {
+
+            $this->addFlash(
+                'danger',
+                'Este animal não atende aos critérios para abate.'
+            );
+
+            return $this->redirectToRoute(
+                'app_gado_index'
+            );
+        }
+
+        /*
+         * Realiza abate
+         */
+        $gado->setAbatido(true);
+
+        $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            'Animal abatido com sucesso.'
+        );
+
+        return $this->redirectToRoute(
+            'app_gado_index'
+        );
+    }
+
+    /*
+     * Remove animal
+     */
     #[Route('/{id}', name: 'app_gado_delete', methods: ['POST'])]
     public function delete(
         Request $request,

@@ -128,7 +128,7 @@ Dashboard
 
                         <p class="text-muted mb-1">
 
-                            Animais Jovens
+                            Animais Jovens de Alto Consumo
 
                         </p>
 
@@ -166,7 +166,7 @@ Dashboard
 
                         <p class="text-muted mb-1">
 
-                            Animais para Abate
+                            Animais Elegíveis para Abate
 
                         </p>
 
@@ -279,7 +279,7 @@ Dashboard
 
                                     <span class="badge bg-dark">
 
-                                        {{ fazenda.gados|length }}
+                                        {{ fazenda.gados }}
 
                                     </span>
 
@@ -375,7 +375,7 @@ Dashboard
 
                 <h4 class="fw-bold text-danger">
 
-                    Animais para Abate
+                    Animais Elegíveis para Abate
 
                 </h4>
 
@@ -421,6 +421,13 @@ Dashboard
 
                                     {{ gado.peso }} Kg
 
+                                    <br>
+
+                                        <small class="text-muted">
+
+                                            {{ (gado.peso / 15)|number_format(1, ',', '.') }} @
+
+                                        </small>
                                 </td>
 
                                 <td>
