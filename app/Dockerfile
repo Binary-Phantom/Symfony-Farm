@@ -13,14 +13,14 @@ RUN apt-get update && apt-get install -y \
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www/aPP
+WORKDIR /var/www/app
 
 COPY . .
 
 ENV APP_ENV=prod
 ENV APP_DEBUG=0
 
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 RUN npm install
 
