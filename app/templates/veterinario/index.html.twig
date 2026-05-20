@@ -33,62 +33,72 @@ Veterinários
                         <th>ID</th>
                         <th>Nome</th>
                         <th>CRMV</th>
-                        <th>Ações</th>
+                        <th class="text-end pe-5">Ações</th>
                     </tr>
 
                 </thead>
 
-                <tbody>
+<tbody>
 
-                {% for veterinario in pagination %}
+{% for veterinario in pagination %}
 
-                    <tr>
+<tr>
 
-                        <td>{{ veterinario.id }}</td>
+    <td>
+        {{ veterinario.id }}
+    </td>
 
-                        <td>{{ veterinario.nome }}</td>
+    <td>
+        {{ veterinario.nome }}
+    </td>
 
-                        <td>{{ veterinario.crmv }}</td>
+    <td>
+        {{ veterinario.crmv }}
+    </td>
 
-                        <td class="d-flex gap-2">
+    <td>
 
-                            <a
-                                href="{{ path('app_veterinario_show', {
-                                    id: veterinario.id
-                                }) }}"
-                                class="btn btn-info btn-sm"
-                            >
-                                Ver
-                            </a>
+        {% include 'components/table-actions.html.twig' with {
 
-                            <a
-                                href="{{ path('app_veterinario_edit', {
-                                    id: veterinario.id
-                                }) }}"
-                                class="btn btn-warning btn-sm"
-                            >
-                                Editar
-                            </a>
+            show_path: path(
+                'app_veterinario_show',
+                {id: veterinario.id}
+            ),
 
-                        </td>
+            edit_path: path(
+                'app_veterinario_edit',
+                {id: veterinario.id}
+            ),
 
-                    </tr>
+            delete_path: path(
+                'app_veterinario_delete',
+                {id: veterinario.id}
+            ),
 
-                {% else %}
+            csrf_token: csrf_token(
+                'delete' ~ veterinario.id
+            )
 
-                    <tr>
+        } %}
 
-                        <td colspan="4">
+                                        </td>
 
-                            Nenhum veterinário encontrado.
+                                        </tr>
 
-                        </td>
+                                            {% else %}
 
-                    </tr>
+                                            <tr>
 
-                {% endfor %}
+                                                <td colspan="4">
 
-                </tbody>
+                                                    Nenhum veterinário encontrado.
+
+                                                </td>
+                                            </tr>
+
+                                        {% endfor %}
+
+                                </tbody>
 
             </table>
 
