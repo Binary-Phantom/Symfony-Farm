@@ -1,9 +1,14 @@
-FROM php:8.4-cli
+FROM php:8.4-fpm
 
 RUN apt-get update && apt-get install -y \
-    git unzip curl zip \
-    libpq-dev libzip-dev \
-    nodejs npm \
+    git \
+    unzip \
+    curl \
+    libpq-dev \
+    libzip-dev \
+    zip \
+    nodejs \
+    npm \
     && docker-php-ext-install pdo pdo_pgsql zip
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -12,13 +17,21 @@ WORKDIR /var/www/app
 
 COPY . .
 
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
+
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-RUN npm install && npm run build
+RUN npm install
 
-COPY docker-entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN npm run build
+
+RUN php bin/console cache:clear --env=prod || true
+
+RUN php bin/console doctrine:migrations:migrate \
+    --no-interaction \
+    --env=prod || true
 
 EXPOSE 10000
 
-CMD ["/entrypoint.sh"]
+CMD php -S 0.0.0.0:$PORT -t public
