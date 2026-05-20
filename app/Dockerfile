@@ -17,12 +17,15 @@ WORKDIR /var/www/app
 
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
+
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 RUN npm install
 
 RUN npm run build
 
-RUN php bin/console cache:clear --env=prod
+RUN php bin/console cache:clear --env=prod || true
 
 CMD php -S 0.0.0.0:$PORT -t public
