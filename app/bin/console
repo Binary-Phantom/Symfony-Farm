@@ -3,7 +3,6 @@
 
 use App\Kernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Dotenv\Dotenv;
 
 if (!is_dir(dirname(__DIR__).'/vendor')) {
     throw new LogicException('Dependencies are missing. Try running "composer install".');
@@ -13,11 +12,8 @@ if (!is_file(dirname(__DIR__).'/vendor/autoload_runtime.php')) {
     throw new LogicException('Symfony Runtime is missing. Try running "composer require symfony/runtime".');
 }
 
-// 🔑 CARREGA .env APENAS EM DESENVOLVIMENTO
-$env = $_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? 'dev';
-if ($env !== 'prod' && is_file(dirname(__DIR__).'/.env')) {
-    (new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
-}
+// 🔑 DESABILITA CARREGAMENTO DE .env GLOBALMENTE
+putenv('SYMFONY_DOTENV_VARS=');
 
 require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
 
