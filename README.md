@@ -26,43 +26,6 @@ Sistema web desenvolvido com Symfony + Docker + PostgreSQL + JavaScript para ger
 
 ---
 
-# Funcionalidades
-
-## Dashboard
-
-- Produção total de leite
-- Consumo semanal de ração
-- Animais jovens especiais
-- Animais elegíveis para abate
-- Resumo visual das fazendas
-- Estatísticas em tempo real
-
-## Fazendas
-
-- Cadastro
-- Edição
-- Exclusão
-- Associação de múltiplos veterinários
-- Relatórios e gráficos
-
-## Gados
-
-- Cadastro de animais
-- Controle de abate
-- Cálculo automático de idade
-- Peso em Kg e arrobas
-- Controle de produção semanal
-- Listagem de abatidos
-
-## Veterinários
-
-- Cadastro
-- CRMV
-- Associação com fazendas
-- Exclusão
-
----
-
 # Requisitos
 
 Antes de iniciar, instale:
@@ -77,13 +40,13 @@ Antes de iniciar, instale:
 # Clonando o Projeto
 
 ```bash
-git clone URL_DO_REPOSITORIO
+git clone 
 ```
 
 Entre na pasta:
 
 ```bash
-cd aPP
+cd app
 ```
 
 ---
@@ -218,41 +181,6 @@ aPP/
 ```
 
 ---
-
-# Regras de Negócio
-
-## Critérios para Abate
-
-O sistema permite abate apenas quando o animal:
-
-- possui mais de 5 anos;
-- produz menos de 40L de leite/semana;
-- produz menos de 70L/semana e consome mais de 50kg/dia de ração;
-- possui mais de 18 arrobas.
-
----
-
-# Dashboard
-
-O dashboard mostra:
-
-- produção total de leite;
-- consumo semanal de ração;
-- animais jovens especiais:
-  - até 1 ano;
-  - mais de 500kg de ração por semana;
-- animais aptos para abate;
-- gráficos das fazendas.
-
----
-
-# Comandos Úteis
-
-## Ver rotas
-
-```bash
-php bin/console debug:router
-```
 
 ## Criar migration
 
