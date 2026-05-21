@@ -19,80 +19,80 @@ final class GadoController extends AbstractController
      * Lista animais vivos
      */
     #[Route('/', name: 'app_gado_index', methods: ['GET'])]
-public function index(
-    GadoRepository $gadoRepository,
-    PaginatorInterface $paginator,
-    Request $request
-): Response {
+    public function index(
+        GadoRepository $gadoRepository,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
 
-    $query = $gadoRepository
-        ->createQueryBuilder('g')
-        ->where('g.abatido = :abatido')
-        ->setParameter('abatido', false)
-        ->orderBy('g.id', 'DESC')
-        ->getQuery();
+        $query = $gadoRepository
+            ->createQueryBuilder('g')
+            ->where('g.abatido = :abatido')
+            ->setParameter('abatido', false)
+            ->orderBy('g.id', 'DESC')
+            ->getQuery();
 
-    $pagination = $paginator->paginate(
+        $pagination = $paginator->paginate(
 
-        $query,
+            $query,
 
-        $request->query->getInt('page', 1),
+            $request->query->getInt('page', 1),
 
-        5,
+            5,
 
-        [
-            'distinct' => true
-        ]
+            [
+                'distinct' => true
+            ]
 
-    );
+        );
 
-    return $this->render('gado/index.html.twig', [
+        return $this->render('gado/index.html.twig', [
 
-        'pagination' => $pagination,
+            'pagination' => $pagination,
 
-    ]);
-}
+        ]);
+    }
 
     /*
      * Lista animais abatidos
      */
     #[Route('/abatidos', name: 'app_gado_abatidos', methods: ['GET'])]
-public function abatidos(
-    GadoRepository $gadoRepository,
-    PaginatorInterface $paginator,
-    Request $request
-): Response {
+    public function abatidos(
+        GadoRepository $gadoRepository,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
 
-    $query = $gadoRepository
-        ->createQueryBuilder('g')
-        ->where('g.abatido = :abatido')
-        ->setParameter('abatido', true)
-        ->orderBy('g.id', 'DESC')
-        ->getQuery();
+        $query = $gadoRepository
+            ->createQueryBuilder('g')
+            ->where('g.abatido = :abatido')
+            ->setParameter('abatido', true)
+            ->orderBy('g.id', 'DESC')
+            ->getQuery();
 
-    $pagination = $paginator->paginate(
+        $pagination = $paginator->paginate(
 
-        $query,
+            $query,
 
-        $request->query->getInt('page', 1),
+            $request->query->getInt('page', 1),
 
-        5,
+            5,
 
-        [
-            'distinct' => true
-        ]
+            [
+                'distinct' => true
+            ]
 
-    );
+        );
 
-    return $this->render(
-        'gado/abatidos.html.twig',
-        [
+        return $this->render(
+            'gado/abatidos.html.twig',
+            [
 
-            'pagination' => $pagination
+                'pagination' => $pagination
 
-        ]
-    );
-}
+            ]
+        );
+    }
 
     /*
      * Cadastro de animal
@@ -100,12 +100,14 @@ public function abatidos(
     #[Route('/new', name: 'app_gado_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        GadoRepository $gadoRepository
     ): Response {
 
         $gado = new Gado();
 
-        /* Animal nasce vivo (avá)
+        /*
+         * Animal nasce vivo
          */
         $gado->setAbatido(false);
 
@@ -116,11 +118,14 @@ public function abatidos(
 
         $form->handleRequest($request);
 
-        /*Validação de data futura no cadastro
+        /*
+         * Validação de data futura
          */
         if (
 
             $form->isSubmitted()
+            &&
+            $gado->getNascimento()
             &&
             $gado->getNascimento() > new \DateTime()
 
@@ -130,9 +135,33 @@ public function abatidos(
                 'danger',
                 'Não é possível cadastrar um animal com data futura.'
             );
+
+            return $this->redirectToRoute(
+                'app_gado_new'
+            );
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            /*
+             * Impede código duplicado entre animais vivos
+             */
+            $gadoExistente = $gadoRepository->findOneBy([
+                'codigo' => $gado->getCodigo(),
+                'abatido' => false
+            ]);
+
+            if ($gadoExistente) {
+
+                $this->addFlash(
+                    'danger',
+                    'Já existe um animal vivo com este código.'
+                );
+
+                return $this->redirectToRoute(
+                    'app_gado_new'
+                );
+            }
 
             $entityManager->persist($gado);
 
@@ -177,7 +206,8 @@ public function abatidos(
     public function edit(
         Request $request,
         Gado $gado,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        GadoRepository $gadoRepository
     ): Response {
 
         $form = $this->createForm(
@@ -194,6 +224,8 @@ public function abatidos(
 
             $form->isSubmitted()
             &&
+            $gado->getNascimento()
+            &&
             $gado->getNascimento() > new \DateTime()
 
         ) {
@@ -202,9 +234,44 @@ public function abatidos(
                 'danger',
                 'Não é possível cadastrar um animal com data futura.'
             );
+
+            return $this->redirectToRoute(
+                'app_gado_edit',
+                [
+                    'id' => $gado->getId()
+                ]
+            );
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            /*
+             * Impede código duplicado entre animais vivos
+             */
+            $gadoExistente = $gadoRepository
+                ->createQueryBuilder('g')
+                ->where('g.codigo = :codigo')
+                ->andWhere('g.abatido = false')
+                ->andWhere('g.id != :id')
+                ->setParameter('codigo', $gado->getCodigo())
+                ->setParameter('id', $gado->getId())
+                ->getQuery()
+                ->getOneOrNullResult();
+
+            if ($gadoExistente) {
+
+                $this->addFlash(
+                    'danger',
+                    'Já existe um animal vivo com este código.'
+                );
+
+                return $this->redirectToRoute(
+                    'app_gado_edit',
+                    [
+                        'id' => $gado->getId()
+                    ]
+                );
+            }
 
             $entityManager->flush();
 
@@ -285,47 +352,24 @@ public function abatidos(
          */
         $podeAbater = false;
 
-        /*
-         * Mais de 5 anos
-         */
         if ($anos > 5) {
-
             $podeAbater = true;
-
         }
 
-        /*
-         * Menos de 40L
-         */
         if ($leiteSemana < 40) {
-
             $podeAbater = true;
-
         }
 
-        /*
-         * Menos de 70L
-         * e mais de 50kg/dia
-         */
         if (
-
             $leiteSemana < 70
             &&
             $racaoDia > 50
-
         ) {
-
             $podeAbater = true;
-
         }
 
-        /*
-         * Mais de 18 arrobas
-         */
         if ($arrobas > 18) {
-
             $podeAbater = true;
-
         }
 
         /*
