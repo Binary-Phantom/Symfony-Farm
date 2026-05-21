@@ -4,19 +4,24 @@ namespace App\Controller;
 
 use App\Repository\FazendaRepository;
 use App\Repository\GadoRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route; /*lembrar de sempre usar Attribute Route* para evitar problemas de cache (BURRO)*/
+use Symfony\Component\Routing\Attribute\Route;
 
 class DashboardController extends AbstractController
 {
     #[Route('/', name: 'dashboard')]
     public function index(
+        Request $request,
         GadoRepository $gadoRepository,
-        FazendaRepository $fazendaRepository
+        FazendaRepository $fazendaRepository,
+        PaginatorInterface $paginator
     ): Response {
 
-        /*Apenas animais vivos
+        /*
+         * Apenas animais vivos
          */
         $gados = $gadoRepository->findBy([
             'abatido' => false
@@ -42,11 +47,13 @@ class DashboardController extends AbstractController
             /*
              * Animal jovem
              */
-            if ($idade <= 1 && $gado->getRacaoSemana() > 500
-
+            if (
+                $idade <= 1
+                &&
+                $gado->getRacaoSemana() > 500
             ) {
-                    $totalAnimaisJovens++;
 
+                $totalAnimaisJovens++;
             }
 
             /*
@@ -54,51 +61,87 @@ class DashboardController extends AbstractController
              */
             $racaoDia = $gado->getRacaoSemana() / 7;
 
-$arrobas = $gado->getPeso() / 15;
+            $arrobas = $gado->getPeso() / 15;
 
-    if (
+            if (
 
-        $idade > 5
-    ||
-        $gado->getLeiteSemana() < 40
-    ||
-        (
-          $gado->getLeiteSemana() < 70
-             &&
-          $racaoDia > 50
-    )
-    ||
-        $arrobas > 18
+                $idade > 5
+                ||
+                $gado->getLeiteSemana() < 40
+                ||
+                (
+                    $gado->getLeiteSemana() < 70
+                    &&
+                    $racaoDia > 50
+                )
+                ||
+                $arrobas > 18
 
-    ) {
+            ) {
 
-    $animaisAbate[] = $gado;
-
-}
+                $animaisAbate[] = $gado;
+            }
         }
 
-
+        /*
+         * Resumo fazendas
+         */
         $resumoFazendas = [];
 
-foreach ($fazendaRepository->findAll() as $fazenda) {
+        foreach ($fazendaRepository->findAll() as $fazenda) {
 
-    $resumoFazendas[] = [
+            $resumoFazendas[] = [
 
-        'nome' => $fazenda->getNome(),
+                'nome' => $fazenda->getNome(),
 
-        'responsavel' =>
-            $fazenda->getResponsavel(),
+                'responsavel' =>
+                    $fazenda->getResponsavel(),
 
-        'tamanho' =>
-            $fazenda->getTamanho(),
+                'tamanho' =>
+                    $fazenda->getTamanho(),
 
-        'gados' =>
-            $gadoRepository->contarVivosPorFazenda(
-                $fazenda->getId()
-            )
+                'gados' =>
+                    $gadoRepository->contarVivosPorFazenda(
+                        $fazenda->getId()
+                    )
 
-    ];
-}
+            ];
+        }
+
+        /*
+         * Paginação Fazendas
+         */
+        $fazendasPagination = $paginator->paginate(
+
+            $resumoFazendas,
+
+            $request->query->getInt('page_fazendas', 1),
+
+            5,
+
+            [
+                'pageParameterName' => 'page_fazendas'
+            ]
+
+        );
+
+        /*
+         * Paginação Abate
+         */
+        $abatePagination = $paginator->paginate(
+
+            $animaisAbate,
+
+            $request->query->getInt('page_abate', 1),
+
+            5,
+
+            [
+                'pageParameterName' => 'page_abate'
+            ]
+
+        );
+
         return $this->render(
             'dashboard/index.html.twig',
             [
@@ -113,10 +156,11 @@ foreach ($fazendaRepository->findAll() as $fazenda) {
                 'totalAbate' =>
                     count($animaisAbate),
 
-                'fazendas' => $resumoFazendas,
+                'fazendasPagination' =>
+                    $fazendasPagination,
 
-                'animaisAbate' =>
-                    $animaisAbate
+                'abatePagination' =>
+                    $abatePagination
 
             ]
         );

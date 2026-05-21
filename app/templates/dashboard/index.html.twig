@@ -245,7 +245,7 @@ Dashboard
 
                         <tbody>
 
-                        {% for fazenda in fazendas %}
+                            {% for fazenda in fazendasPagination %}
 
                             <tr>
 
@@ -311,7 +311,13 @@ Dashboard
 
         </div>
 
-    </div>
+                <div class="d-flex justify-content-center mt-4">
+
+                    {{ knp_pagination_render(fazendasPagination) }}
+
+                </div>
+
+        </div>
 
     <div class="col-12 col-xl-4">
 
@@ -403,7 +409,7 @@ Dashboard
 
                         <tbody>
 
-                        {% for gado in animaisAbate %}
+                        {% for gado in abatePagination %}
 
                             <tr>
 
@@ -475,8 +481,13 @@ Dashboard
         </div>
 
     </div>
+        <div class="d-flex justify-content-center mt-4">
 
-</div>
+            {{ knp_pagination_render(abatePagination) }}
+
+        </div>
+
+    </div>
 
 <style>
 

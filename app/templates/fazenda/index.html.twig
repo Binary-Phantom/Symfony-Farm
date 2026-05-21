@@ -50,7 +50,7 @@ Fazendas
 
         <div class="table-responsive">
 
-            <table class="table table-hover">
+            <table class="table table-hover align-middle">
 
                 <thead>
 
@@ -60,7 +60,7 @@ Fazendas
                         <th>Tamanho</th>
                         <th>Responsável</th>
                         <th>Veterinário(s)</th>
-                        <th class="text-end pe-5">Ações</th>
+                        <th class="text-end">Ações</th>
                     </tr>
 
                 </thead>
@@ -69,80 +69,104 @@ Fazendas
 
                 {% for fazenda in pagination %}
 
-<tr>
+                    <tr>
 
-    <td>
-        {{ fazenda.id }}
-    </td>
+                        <td>
 
-    <td>
-        {{ fazenda.nome }}
-    </td>
+                            {{ fazenda.id }}
 
-    <td>
-        {{ fazenda.tamanho }} HA
-    </td>
+                        </td>
 
-    <td>
-        {{ fazenda.responsavel }}
-    </td>
+                        <td>
 
-    <td>
+                            {{ fazenda.nome }}
 
-        {% for veterinario in fazenda.veterinarios %}
+                        </td>
 
-            <span class="badge bg-primary mb-1">
+                        <td>
 
-                {{ veterinario.nome }}
+                            {{ fazenda.tamanho }} HA
 
-                -
+                        </td>
 
-                CRMV: {{ veterinario.crmv }}
+                        <td>
 
-            </span>
+                            {{ fazenda.responsavel }}
 
-            <br>
+                        </td>
 
-        {% else %}
+                        <td>
 
-            <span class="text-muted">
+                            {% for veterinario in fazenda.veterinarios %}
 
-                Nenhum veterinário
+                                <span class="badge bg-primary mb-1">
 
-            </span>
+                                    {{ veterinario.nome }}
 
-        {% endfor %}
+                                    -
 
-    </td>
+                                    CRMV: {{ veterinario.crmv }}
 
-    <td>
+                                </span>
 
-        {% include 'components/table-actions.html.twig' with {
+                                <br>
 
-            show_path: path(
-                'app_fazenda_show',
-                {id: fazenda.id}
-            ),
+                            {% else %}
 
-            edit_path: path(
-                'app_fazenda_edit',
-                {id: fazenda.id}
-            ),
+                                <span class="text-muted">
 
-            delete_path: path(
-                'app_fazenda_delete',
-                {id: fazenda.id}
-            ),
+                                    Nenhum veterinário
 
-            csrf_token: csrf_token(
-                'delete' ~ fazenda.id
-            )
+                                </span>
 
-                     } %}
+                            {% endfor %}
 
-                    </td>
+                        </td>
 
-                </tr>
+                        <td class="text-end">
+
+                            <div class="d-flex justify-content-end">
+
+                                {% include 'components/table-actions.html.twig' with {
+
+                                    show_path: path(
+                                        'app_fazenda_show',
+                                        {id: fazenda.id}
+                                    ),
+
+                                    edit_path: path(
+                                        'app_fazenda_edit',
+                                        {id: fazenda.id}
+                                    ),
+
+                                    delete_path: path(
+                                        'app_fazenda_delete',
+                                        {id: fazenda.id}
+                                    ),
+
+                                    csrf_token: csrf_token(
+                                        'delete' ~ fazenda.id
+                                    )
+
+                                } %}
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="6" class="text-center">
+
+                            Nenhuma fazenda encontrada.
+
+                        </td>
+
+                    </tr>
 
                 {% endfor %}
 
@@ -151,6 +175,8 @@ Fazendas
             </table>
 
         </div>
+
+        {% include 'pagination.html.twig' with {'pagination': pagination} %}
 
     </div>
 
