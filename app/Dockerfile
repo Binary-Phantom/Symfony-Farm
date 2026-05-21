@@ -17,6 +17,7 @@ WORKDIR /var/www/app
 
 COPY . .
 
+
 ENV APP_ENV=prod
 ENV APP_DEBUG=0
 
