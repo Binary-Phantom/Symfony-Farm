@@ -19,70 +19,80 @@ final class GadoController extends AbstractController
      * Lista animais vivos
      */
     #[Route('/', name: 'app_gado_index', methods: ['GET'])]
-    public function index(
-        GadoRepository $gadoRepository,
-        PaginatorInterface $paginator,
-        Request $request
-    ): Response {
+public function index(
+    GadoRepository $gadoRepository,
+    PaginatorInterface $paginator,
+    Request $request
+): Response {
 
-        $query = $gadoRepository
-             ->createQueryBuilder('g')
-            ->where('g.abatido = false')
-            ->orderBy('g.id', 'DESC')
-            ->getQuery();
+    $query = $gadoRepository
+        ->createQueryBuilder('g')
+        ->where('g.abatido = :abatido')
+        ->setParameter('abatido', false)
+        ->orderBy('g.id', 'DESC')
+        ->getQuery();
 
-        $pagination = $paginator->paginate(
+    $pagination = $paginator->paginate(
 
-            $query,
+        $query,
 
-            $request->query->getInt('page', 1),
+        $request->query->getInt('page', 1),
 
-            5
+        5,
 
-        );
+        [
+            'distinct' => true
+        ]
 
-        return $this->render('gado/index.html.twig', [
+    );
 
-            'pagination' => $pagination,
+    return $this->render('gado/index.html.twig', [
 
-        ]);
-    }
+        'pagination' => $pagination,
+
+    ]);
+}
 
     /*
      * Lista animais abatidos
      */
     #[Route('/abatidos', name: 'app_gado_abatidos', methods: ['GET'])]
-    public function abatidos(
-        GadoRepository $gadoRepository,
-        PaginatorInterface $paginator,
-        Request $request
-    ): Response {
+public function abatidos(
+    GadoRepository $gadoRepository,
+    PaginatorInterface $paginator,
+    Request $request
+): Response {
 
-            $query = $gadoRepository
-                ->createQueryBuilder('g')
-                ->where('g.abatido = true')
-                ->orderBy('g.id', 'DESC')
-                ->getQuery();
+    $query = $gadoRepository
+        ->createQueryBuilder('g')
+        ->where('g.abatido = :abatido')
+        ->setParameter('abatido', true)
+        ->orderBy('g.id', 'DESC')
+        ->getQuery();
 
-        $pagination = $paginator->paginate(
+    $pagination = $paginator->paginate(
 
-            $query,
+        $query,
 
-            $request->query->getInt('page', 1),
+        $request->query->getInt('page', 1),
 
-            5
+        5,
 
-        );
+        [
+            'distinct' => true
+        ]
 
-        return $this->render(
-            'gado/abatidos.html.twig',
-            [
+    );
 
-                'pagination' => $pagination
+    return $this->render(
+        'gado/abatidos.html.twig',
+        [
 
-            ]
-        );
-    }
+            'pagination' => $pagination
+
+        ]
+    );
+}
 
     /*
      * Cadastro de animal

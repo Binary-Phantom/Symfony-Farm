@@ -17,33 +17,37 @@ use Symfony\Component\Routing\Attribute\Route;
 final class FazendaController extends AbstractController
 {
     #[Route('/', name: 'app_fazenda_index', methods: ['GET'])]
-    public function index(
-        FazendaRepository $fazendaRepository,
-        PaginatorInterface $paginator,
-        Request $request
-    ): Response {
+public function index(
+    FazendaRepository $fazendaRepository,
+    PaginatorInterface $paginator,
+    Request $request
+): Response {
 
-        $query = $fazendaRepository
-            ->createQueryBuilder('f')
-            ->orderBy('f.id', 'DESC')
-            ->getQuery();
+    $query = $fazendaRepository
+        ->createQueryBuilder('f')
+        ->orderBy('f.id', 'DESC')
+        ->getQuery();
 
-        $pagination = $paginator->paginate(
+    $pagination = $paginator->paginate(
 
-            $query,
+        $query,
 
-            $request->query->getInt('page', 1),
+        $request->query->getInt('page', 1),
 
-            5
+        5,
 
-        );
+        [
+            'distinct' => true
+        ]
 
-        return $this->render('fazenda/index.html.twig', [
+    );
 
-            'pagination' => $pagination,
+    return $this->render('fazenda/index.html.twig', [
 
-        ]);
-    }
+        'pagination' => $pagination,
+
+    ]);
+}
 
     #[Route('/resumo', name: 'app_fazenda_resumo', methods: ['GET'])]
     public function resumo(
