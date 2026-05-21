@@ -306,8 +306,10 @@ Dashboard
                     </table>
 
                 </div>
-                
-                 {% include 'components/pagination.html.twig' %}
+
+                 {% include 'components/pagination.html.twig' with {
+                    pagination: fazendasPagination
+                } %}
 
             </div>
 
@@ -471,7 +473,9 @@ Dashboard
                     </table>
 
                 </div>
-                        {% include 'components/pagination.html.twig' %}
+                        {% include 'components/pagination.html.twig' with {
+                            pagination: abatePagination
+                        } %}
 
 
             </div>
