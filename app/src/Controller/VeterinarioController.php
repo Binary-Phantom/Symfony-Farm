@@ -17,33 +17,30 @@ final class VeterinarioController extends AbstractController
 {
     #[Route(name: 'app_veterinario_index', methods: ['GET'])]
     public function index(
-    VeterinarioRepository $veterinarioRepository,
-    PaginatorInterface $paginator,
-    Request $request
-): Response
-{
-    $query = $veterinarioRepository
-        ->createQueryBuilder('v')
-        ->orderBy('v.id', 'DESC');
+        VeterinarioRepository $veterinarioRepository,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
 
-    $pagination = $paginator->paginate(
+        $qb = $veterinarioRepository->createQueryBuilder('v')
+            ->select('v')
+            ->orderBy('v.id', 'DESC');
 
-        $query,
+        $pagination = $paginator->paginate(
+            $qb,
+            $request->query->getInt('page', 1),
+            5,
+            [
+                'distinct' => true,
+                'wrap-queries' => true,
+            ]
+        );
 
-        $request->query->getInt('page', 1),
-
-        5
-
-    );
-
-    return $this->render('veterinario/index.html.twig', [
-
+        return $this->render('veterinario/index.html.twig', [
             'pagination' => $pagination,
-
         ]);
     }
 
-    /* nova tela de cadastro de veterinário */
     #[Route('/new', name: 'app_veterinario_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -55,7 +52,7 @@ final class VeterinarioController extends AbstractController
             $entityManager->persist($veterinario);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_veterinario_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_veterinario_index');
         }
 
         return $this->render('veterinario/new.html.twig', [
@@ -63,7 +60,7 @@ final class VeterinarioController extends AbstractController
             'form' => $form,
         ]);
     }
-    /* tela de detalhes do veterinário (lembrar de tentar por foto depois sla) */
+
     #[Route('/{id}', name: 'app_veterinario_show', methods: ['GET'])]
     public function show(Veterinario $veterinario): Response
     {
@@ -71,7 +68,7 @@ final class VeterinarioController extends AbstractController
             'veterinario' => $veterinario,
         ]);
     }
-    /*editar veterinário*/
+
     #[Route('/{id}/edit', name: 'app_veterinario_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Veterinario $veterinario, EntityManagerInterface $entityManager): Response
     {
@@ -81,7 +78,7 @@ final class VeterinarioController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_veterinario_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_veterinario_index');
         }
 
         return $this->render('veterinario/edit.html.twig', [
@@ -93,11 +90,11 @@ final class VeterinarioController extends AbstractController
     #[Route('/{id}', name: 'app_veterinario_delete', methods: ['POST'])]
     public function delete(Request $request, Veterinario $veterinario, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$veterinario->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$veterinario->getId(), $request->request->get('_token'))) {
             $entityManager->remove($veterinario);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_veterinario_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_veterinario_index');
     }
 }
