@@ -31,7 +31,7 @@ RUN npm run build
 
 RUN php bin/console cache:clear --env=prod || true
 
-RUN php bin/console doctrine:migrations:migrate \ --no-interaction \ --env=prod || true
+RUN php bin/console doctrine:migrations:migrate --no-interaction --env=prod || true
 
 EXPOSE 10000
 
