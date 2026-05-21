@@ -2,7 +2,8 @@
 
 
 
-# Sistema de Gerenciamento de Fazendas Symfony Farm 🐄
+# Sistema de Gerenciamento de Fazendas 
+Symfony Farm 🐄
 
 Sistema web desenvolvido com Symfony + Docker + PostgreSQL + JavaScript para gerenciamento de fazendas, rebanhos e veterinários.
 
