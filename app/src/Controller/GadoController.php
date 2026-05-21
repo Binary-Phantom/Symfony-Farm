@@ -36,7 +36,7 @@ final class GadoController extends AbstractController
 
             $request->query->getInt('page', 1),
 
-            10
+            5
 
         );
 
@@ -68,7 +68,7 @@ final class GadoController extends AbstractController
 
             $request->query->getInt('page', 1),
 
-            10
+            5
 
         );
 

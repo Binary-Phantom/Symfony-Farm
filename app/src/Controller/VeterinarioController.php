@@ -32,7 +32,7 @@ final class VeterinarioController extends AbstractController
 
         $request->query->getInt('page', 1),
 
-        10
+        5
 
     );
 

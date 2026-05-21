@@ -33,7 +33,7 @@ final class FazendaController extends AbstractController
 
             $request->query->getInt('page', 1),
 
-            10
+            5
 
         );
 
