@@ -25,6 +25,8 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 RUN npm install
 
+RUN touch /var/www/app/.env && chmod 644 /var/www/app/.env
+
 RUN npm run build
 
 RUN php bin/console cache:clear --env=prod || true
