@@ -25,7 +25,8 @@ final class FazendaController extends AbstractController
 
         $query = $fazendaRepository
             ->createQueryBuilder('f')
-            ->orderBy('f.id', 'DESC');
+            ->orderBy('f.id', 'DESC')
+            ->getQuery();
 
         $pagination = $paginator->paginate(
 
@@ -145,7 +146,7 @@ final class FazendaController extends AbstractController
 
         ]);
     }
-    /* tela de detalhes da fazenda */
+
     #[Route('/{id}', name: 'app_fazenda_show', methods: ['GET'])]
     public function show(Fazenda $fazenda): Response
     {

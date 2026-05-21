@@ -26,9 +26,10 @@ final class GadoController extends AbstractController
     ): Response {
 
         $query = $gadoRepository
-            ->createQueryBuilder('g')
+             ->createQueryBuilder('g')
             ->where('g.abatido = false')
-            ->orderBy('g.id', 'DESC');
+            ->orderBy('g.id', 'DESC')
+            ->getQuery();
 
         $pagination = $paginator->paginate(
 
@@ -57,10 +58,11 @@ final class GadoController extends AbstractController
         Request $request
     ): Response {
 
-        $query = $gadoRepository
-            ->createQueryBuilder('g')
-            ->where('g.abatido = true')
-            ->orderBy('g.id', 'DESC');
+            $query = $gadoRepository
+                ->createQueryBuilder('g')
+                ->where('g.abatido = true')
+                ->orderBy('g.id', 'DESC')
+                ->getQuery();
 
         $pagination = $paginator->paginate(
 
@@ -93,8 +95,7 @@ final class GadoController extends AbstractController
 
         $gado = new Gado();
 
-        /*
-         * Animal nasce vivo
+        /* Animal nasce vivo (avá)
          */
         $gado->setAbatido(false);
 
@@ -105,8 +106,7 @@ final class GadoController extends AbstractController
 
         $form->handleRequest($request);
 
-        /*
-         * Validação de data futura
+        /*Validação de data futura no cadastro
          */
         if (
 
