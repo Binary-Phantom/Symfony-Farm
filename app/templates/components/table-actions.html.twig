@@ -1,15 +1,15 @@
-<div class="d-flex justify-content-end gap-2">
+<div class="d-flex justify-content-end gap-2 flex-wrap">
 
     <a
         href="{{ show_path }}"
-        class="btn btn-sm btn-primary"
+        class="btn btn-sm btn-action btn-show"
     >
         Ver
     </a>
 
     <a
         href="{{ edit_path }}"
-        class="btn btn-sm btn-warning"
+        class="btn btn-sm btn-action btn-edit"
     >
         Editar
     </a>
@@ -26,12 +26,97 @@
             value="{{ csrf_token }}"
         >
 
-        <button class="btn btn-sm btn-danger">
-
+        <button
+            class="btn btn-sm btn-action btn-delete"
+        >
             Excluir
-
         </button>
 
     </form>
 
 </div>
+
+<style>
+
+.btn-action {
+
+    border: none;
+
+    border-radius: 12px;
+
+    padding: 6px 14px;
+
+    font-weight: 600;
+
+    transition: all 0.25s ease;
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+
+}
+
+.btn-action:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+
+}
+
+/*
+ * Botão Ver
+ */
+.btn-show {
+
+    background: #eef2ff;
+
+    color: #4f46e5;
+
+}
+
+.btn-show:hover {
+
+    background: #4f46e5;
+
+    color: white;
+
+}
+
+/*
+ * Botão Editar
+ */
+.btn-edit {
+
+    background: #ecfeff;
+
+    color: #0891b2;
+
+}
+
+.btn-edit:hover {
+
+    background: #0891b2;
+
+    color: white;
+
+}
+
+/*
+ * Botão Excluir
+ */
+.btn-delete {
+
+    background: #fee2e2;
+
+    color: #dc2626;
+
+}
+
+.btn-delete:hover {
+
+    background: #dc2626;
+
+    color: white;
+
+}
+
+</style>
