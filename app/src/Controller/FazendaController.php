@@ -142,7 +142,7 @@ public function new(
         if ($fazendaExistente) {
 
             $this->addFlash(
-                'error',
+                'danger',
                 'Já existe uma fazenda cadastrada com esse nome.'
             );
 
