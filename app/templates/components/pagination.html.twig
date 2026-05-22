@@ -1,5 +1,185 @@
+{% if pagination.pageCount > 1 %}
+
 <div class="d-flex justify-content-center mt-4">
 
-    {{ knp_pagination_render(pagination) }}
+    <nav aria-label="Paginação">
+
+        <ul class="pagination pagination-modern shadow-sm">
+
+            {# Botão anterior #}
+            {% if pagination.previous is defined %}
+
+                <li class="page-item">
+
+                    <a
+                        class="page-link"
+                        href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({ (pagination.pageParameterName): pagination.previous })) }}"
+                    >
+                        <span aria-hidden="true">
+
+                            &laquo;
+
+                        </span>
+
+                    </a>
+
+                </li>
+
+            {% else %}
+
+                <li class="page-item disabled">
+
+                    <span class="page-link">
+
+                        &laquo;
+
+                    </span>
+
+                </li>
+
+            {% endif %}
+
+            {# Páginas #}
+            {% for page in pagination.pagesInRange %}
+
+                {% if page != pagination.currentPageNumber %}
+
+                    <li class="page-item">
+
+                        <a
+                            class="page-link"
+                            href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({ (pagination.pageParameterName): page })) }}"
+                        >
+                            {{ page }}
+                        </a>
+
+                    </li>
+
+                {% else %}
+
+                    <li class="page-item active">
+
+                        <span class="page-link">
+
+                            {{ page }}
+
+                        </span>
+
+                    </li>
+
+                {% endif %}
+
+            {% endfor %}
+
+            {# Próximo #}
+            {% if pagination.next is defined %}
+
+                <li class="page-item">
+
+                    <a
+                        class="page-link"
+                        href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({ (pagination.pageParameterName): pagination.next })) }}"
+                    >
+                        <span aria-hidden="true">
+
+                            &raquo;
+
+                        </span>
+
+                    </a>
+
+                </li>
+
+            {% else %}
+
+                <li class="page-item disabled">
+
+                    <span class="page-link">
+
+                        &raquo;
+
+                    </span>
+
+                </li>
+
+            {% endif %}
+
+        </ul>
+
+    </nav>
 
 </div>
+
+<style>
+
+.pagination-modern {
+
+    gap: 8px;
+
+}
+
+.pagination-modern .page-link {
+
+    border: none;
+
+    border-radius: 12px;
+
+    min-width: 42px;
+
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: 600;
+
+    color: #198754;
+
+    background: #ffffff;
+
+    transition: all 0.2s ease;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+}
+
+.pagination-modern .page-link:hover {
+
+    background: #198754;
+
+    color: white;
+
+    transform: translateY(-2px);
+
+}
+
+.pagination-modern .page-item.active .page-link {
+
+    background: linear-gradient(
+        135deg,
+        #198754,
+        #20c997
+    );
+
+    color: white;
+
+    box-shadow: 0 4px 14px rgba(25,135,84,0.35);
+
+}
+
+.pagination-modern .page-item.disabled .page-link {
+
+    background: #f1f3f5;
+
+    color: #adb5bd;
+
+    box-shadow: none;
+
+}
+
+</style>
+
+{% endif %}
