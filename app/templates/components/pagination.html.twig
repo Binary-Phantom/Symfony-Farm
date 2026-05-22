@@ -6,21 +6,21 @@
 
         <ul class="pagination pagination-modern shadow-sm">
 
-            {# Botão anterior #}
+            {# Anterior #}
             {% if pagination.previous is defined %}
 
                 <li class="page-item">
 
                     <a
                         class="page-link"
-                        href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({ (pagination.pageParameterName): pagination.previous })) }}"
+                        href="{{ path(
+                            app.request.attributes.get('_route'),
+                            app.request.query.all | merge({
+                                (pagination.pageParameterName): pagination.previous
+                            })
+                        ) }}"
                     >
-                        <span aria-hidden="true">
-
-                            &laquo;
-
-                        </span>
-
+                        &laquo;
                     </a>
 
                 </li>
@@ -40,22 +40,9 @@
             {% endif %}
 
             {# Páginas #}
-            {% for page in pagination.pagesInRange %}
+            {% for page in pagination.paginationData.pagesInRange %}
 
-                {% if page != pagination.currentPageNumber %}
-
-                    <li class="page-item">
-
-                        <a
-                            class="page-link"
-                            href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({ (pagination.pageParameterName): page })) }}"
-                        >
-                            {{ page }}
-                        </a>
-
-                    </li>
-
-                {% else %}
+                {% if page == pagination.currentPageNumber %}
 
                     <li class="page-item active">
 
@@ -64,6 +51,24 @@
                             {{ page }}
 
                         </span>
+
+                    </li>
+
+                {% else %}
+
+                    <li class="page-item">
+
+                        <a
+                            class="page-link"
+                            href="{{ path(
+                                app.request.attributes.get('_route'),
+                                app.request.query.all | merge({
+                                    (pagination.pageParameterName): page
+                                })
+                            ) }}"
+                        >
+                            {{ page }}
+                        </a>
 
                     </li>
 
@@ -78,14 +83,14 @@
 
                     <a
                         class="page-link"
-                        href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({ (pagination.pageParameterName): pagination.next })) }}"
+                        href="{{ path(
+                            app.request.attributes.get('_route'),
+                            app.request.query.all | merge({
+                                (pagination.pageParameterName): pagination.next
+                            })
+                        ) }}"
                     >
-                        <span aria-hidden="true">
-
-                            &raquo;
-
-                        </span>
-
+                        &raquo;
                     </a>
 
                 </li>
@@ -138,7 +143,7 @@
 
     color: #198754;
 
-    background: #ffffff;
+    background: #fff;
 
     transition: all 0.2s ease;
 
