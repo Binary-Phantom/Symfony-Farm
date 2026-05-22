@@ -142,83 +142,81 @@
 
                         </td>
 
-                        <td class="text-end">
+                        <td>
 
-                            <div class="d-flex justify-content-end gap-2 flex-wrap">
+    <div class="d-flex gap-2 flex-wrap justify-content-end">
 
-                                <a
-                                    href="{{ path('app_gado_show', {id: gado.id}) }}"
-                                    class="btn btn-sm btn-primary"
-                                >
-                                    Ver
-                                </a>
+        <a
+            href="{{ path('app_gado_show', {id: gado.id}) }}"
+            class="btn btn-sm btn-action btn-show"
+        >
+            Ver
+        </a>
 
-                                <a
-                                    href="{{ path('app_gado_edit', {id: gado.id}) }}"
-                                    class="btn btn-sm btn-warning"
-                                >
-                                    Editar
-                                </a>
+        <a
+            href="{{ path('app_gado_edit', {id: gado.id}) }}"
+            class="btn btn-sm btn-action btn-edit"
+        >
+            Editar
+        </a>
 
-                                {# REGRAS PARA ABATE #}
+        {# REGRAS PARA ABATE #}
 
-                                {% set anos = idade.y %}
+        {% set idade = date().diff(gado.nascimento) %}
 
-                                {% set leiteSemana = gado.leiteSemana %}
+        {% set anos = idade.y %}
 
-                                {% set racaoDia = gado.racaoSemana / 7 %}
+        {% set leiteSemana = gado.leiteSemana %}
 
-                                {% set arrobas = gado.peso / 15 %}
+        {% set racaoDia = gado.racaoSemana / 7 %}
 
-                                {% set podeAbater = false %}
+        {% set arrobas = gado.peso / 15 %}
 
-                                {# Mais de 5 anos #}
-                                {% if anos > 5 %}
-                                    {% set podeAbater = true %}
-                                {% endif %}
+        {% set podeAbater = false %}
 
-                                {# Menos de 40L semana #}
-                                {% if leiteSemana < 40 %}
-                                    {% set podeAbater = true %}
-                                {% endif %}
+        {% if anos > 5 %}
+            {% set podeAbater = true %}
+        {% endif %}
 
-                                {# Menos de 70L + mais de 50kg/dia #}
-                                {% if leiteSemana < 70 and racaoDia > 50 %}
-                                    {% set podeAbater = true %}
-                                {% endif %}
+        {% if leiteSemana < 40 %}
+            {% set podeAbater = true %}
+        {% endif %}
 
-                                {# Mais de 18 arrobas #}
-                                {% if arrobas > 18 %}
-                                    {% set podeAbater = true %}
-                                {% endif %}
+        {% if leiteSemana < 70 and racaoDia > 50 %}
+            {% set podeAbater = true %}
+        {% endif %}
 
-                                {% if podeAbater %}
+        {% if arrobas > 18 %}
+            {% set podeAbater = true %}
+        {% endif %}
 
-                                    <form
-                                        method="post"
-                                        action="{{ path('app_gado_abater', {id: gado.id}) }}"
-                                        onsubmit="return confirm('Deseja realmente abater este animal?');"
-                                    >
+        {% if podeAbater %}
 
-                                        <input
-                                            type="hidden"
-                                            name="_token"
-                                            value="{{ csrf_token('abater' ~ gado.id) }}"
-                                        >
+            <form
+                method="post"
+                action="{{ path('app_gado_abater', {id: gado.id}) }}"
+                onsubmit="return confirm('Deseja realmente abater este animal?');"
+            >
 
-                                        <button
-                                            class="btn btn-sm btn-danger"
-                                        >
-                                            Abater
-                                        </button>
+                <input
+                    type="hidden"
+                    name="_token"
+                    value="{{ csrf_token('abater' ~ gado.id) }}"
+                >
 
-                                    </form>
+                <button
+                    class="btn btn-sm btn-delete"
+                >
+                    Abater
+                </button>
 
-                                {% endif %}
+            </form>
 
-                            </div>
+        {% endif %}
 
-                        </td>
+    </div>
+
+</td>
 
                     </tr>
 

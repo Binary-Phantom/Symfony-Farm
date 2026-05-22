@@ -19,7 +19,6 @@ class GadoType extends AbstractType
             ->add('racaoSemana')
             ->add('peso')
             ->add('nascimento')
-            ->add('abatido')
             ->add('fazenda', EntityType::class, [
 
     'class' => Fazenda::class,
