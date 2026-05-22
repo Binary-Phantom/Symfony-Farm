@@ -1,44 +1,46 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% for label, messages in app.flashes %}
 
-<head>
+    {% for message in messages %}
 
-    <meta charset="UTF-8">
+        <div
+            class="alert
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+            {% if label == 'success' %}
+                alert-success
 
-    <title>{% block title %}Symfony Farm{% endblock %}</title>
+            {% elseif label == 'danger' or label == 'error' %}
+                alert-danger
 
-    {{ encore_entry_link_tags('app') }}
+            {% elseif label == 'warning' %}
+                alert-warning
 
-</head>
+            {% else %}
+                alert-info
+            {% endif %}
 
-<body class="bg-light">
+            alert-dismissible fade show shadow-sm"
+            role="alert"
+        >
 
-    {% include 'components/navbar.html.twig' %}
+            <div class="d-flex align-items-center justify-content-between">
 
-    <div class="container-fluid">
+                <span>
 
-        <div class="row">
+                    {{ message }}
 
-            <div class="col-lg-2 p-0">
-                {% include 'components/sidebar.html.twig' %}
-            </div>
+                </span>
 
-            <div class="col-lg-10 p-4">
-
-                {% include 'components/alerts.html.twig' %}
-
-                {% block body %}{% endblock %}
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"
+                ></button>
 
             </div>
 
         </div>
 
-    </div>
+    {% endfor %}
 
-    {{ encore_entry_script_tags('app') }}
-
-</body>
-
-</html>
+{% endfor %}

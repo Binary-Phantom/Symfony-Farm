@@ -112,44 +112,71 @@ public function index(
     }
 
     #[Route('/new', name: 'app_fazenda_new', methods: ['GET', 'POST'])]
-    public function new(
-        Request $request,
-        EntityManagerInterface $entityManager
-    ): Response {
+public function new(
+    Request $request,
+    EntityManagerInterface $entityManager,
+    FazendaRepository $fazendaRepository
+): Response {
 
-        $fazenda = new Fazenda();
+    $fazenda = new Fazenda();
 
-        $form = $this->createForm(
-            FazendaType::class,
-            $fazenda
-        );
+    $form = $this->createForm(
+        FazendaType::class,
+        $fazenda
+    );
 
-        $form->handleRequest($request);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+    if ($form->isSubmitted() && $form->isValid()) {
 
-            $entityManager->persist($fazenda);
+        /*
+         * Verifica se já existe fazenda
+         * com o mesmo nome
+         */
+        $fazendaExistente = $fazendaRepository->findOneBy([
 
-            $entityManager->flush();
-
-            $this->addFlash(
-                'success',
-                'Fazenda cadastrada com sucesso.'
-            );
-
-            return $this->redirectToRoute(
-                'app_fazenda_index'
-            );
-        }
-
-        return $this->render('fazenda/new.html.twig', [
-
-            'fazenda' => $fazenda,
-
-            'form' => $form,
+            'nome' => $fazenda->getNome()
 
         ]);
+
+        if ($fazendaExistente) {
+
+            $this->addFlash(
+                'error',
+                'Já existe uma fazenda cadastrada com esse nome.'
+            );
+
+            return $this->render('fazenda/new.html.twig', [
+
+                'fazenda' => $fazenda,
+
+                'form' => $form,
+
+            ]);
+        }
+
+        $entityManager->persist($fazenda);
+
+        $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            'Fazenda cadastrada com sucesso.'
+        );
+
+        return $this->redirectToRoute(
+            'app_fazenda_index'
+        );
     }
+
+    return $this->render('fazenda/new.html.twig', [
+
+        'fazenda' => $fazenda,
+
+        'form' => $form,
+
+    ]);
+}
 
     #[Route('/{id}', name: 'app_fazenda_show', methods: ['GET'])]
     public function show(Fazenda $fazenda): Response
