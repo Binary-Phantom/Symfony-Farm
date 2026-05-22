@@ -130,15 +130,23 @@ public function new(
     if ($form->isSubmitted() && $form->isValid()) {
 
         /*
-         * Verifica se já existe fazenda
-         * com o mesmo nome
+         * Remove espaços extras
          */
-        $fazendaExistente = $fazendaRepository->findOneBy([
+        $nome = trim($fazenda->getNome());
 
-            'nome' => $fazenda->getNome()
+        /*
+         * Busca ignorando maiúsculas/minúsculas
+         */
+        $fazendaExistente = $fazendaRepository
+            ->createQueryBuilder('f')
+            ->where('LOWER(f.nome) = LOWER(:nome)')
+            ->setParameter('nome', $nome)
+            ->getQuery()
+            ->getOneOrNullResult();
 
-        ]);
-
+        /*
+         * Nome já existe
+         */
         if ($fazendaExistente) {
 
             $this->addFlash(
@@ -154,6 +162,11 @@ public function new(
 
             ]);
         }
+
+        /*
+         * Salva fazenda
+         */
+        $fazenda->setNome($nome);
 
         $entityManager->persist($fazenda);
 
