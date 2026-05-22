@@ -1,3 +1,7 @@
+{% if pageParameter is not defined %}
+    {% set pageParameter = 'page' %}
+{% endif %}
+
 {% if pagination.pageCount > 1 %}
 
 <div class="d-flex justify-content-center mt-4">
@@ -6,7 +10,7 @@
 
         <ul class="pagination pagination-modern shadow-sm">
 
-            {# Anterior #}
+            {# Página anterior #}
             {% if pagination.previous is defined %}
 
                 <li class="page-item">
@@ -39,7 +43,7 @@
 
             {% endif %}
 
-            {# Páginas #}
+            {# Números das páginas #}
             {% for page in pagination.paginationData.pagesInRange %}
 
                 {% if page == pagination.currentPageNumber %}
@@ -76,7 +80,7 @@
 
             {% endfor %}
 
-            {# Próximo #}
+            {# Próxima página #}
             {% if pagination.next is defined %}
 
                 <li class="page-item">
