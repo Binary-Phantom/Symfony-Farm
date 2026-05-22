@@ -19,7 +19,7 @@
                         class="page-link"
                         href="{{ path(
                             app.request.attributes.get('_route'),
-                            app.request.query.all | merge({
+                            query|default({})|merge({
                                 (pageParameter): pagination.previous
                             })
                         ) }}"
@@ -43,7 +43,7 @@
 
             {% endif %}
 
-            {# Números das páginas #}
+            {# Páginas #}
             {% for page in pagination.paginationData.pagesInRange %}
 
                 {% if page == pagination.currentPageNumber %}
@@ -66,7 +66,7 @@
                             class="page-link"
                             href="{{ path(
                                 app.request.attributes.get('_route'),
-                                app.request.query.all | merge({
+                                query|default({})|merge({
                                     (pageParameter): page
                                 })
                             ) }}"
@@ -80,7 +80,7 @@
 
             {% endfor %}
 
-            {# Próxima página #}
+            {# Próxima #}
             {% if pagination.next is defined %}
 
                 <li class="page-item">
@@ -89,7 +89,7 @@
                         class="page-link"
                         href="{{ path(
                             app.request.attributes.get('_route'),
-                            app.request.query.all | merge({
+                            query|default({})|merge({
                                 (pageParameter): pagination.next
                             })
                         ) }}"
